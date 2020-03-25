@@ -1,15 +1,19 @@
 <template lang="pug">
-  v-row(justify="center")
-    v-col(cols="12", sm="6")
-      login-app
+  div
+    h1 welcome boy !
+    p() {{user}} {{$can('create', 'years')}}
+    p(v-if="$can('create', 'years')") ça marche pas !!!!
 </template>
 
 <script>
-import Login from '@/components/login'
+import { mapGetters } from 'vuex'
 
 export default {
-  components: {
-    'login-app': Login
+  computed: {
+    ...mapGetters({
+      isAuth: 'auth/isAuthenticated',
+      user: 'auth/user'
+    })
   }
 }
 </script>

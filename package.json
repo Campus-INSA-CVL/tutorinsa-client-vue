@@ -4,6 +4,12 @@
   "description": "Client for tutorinsa",
   "author": "Esteban S",
   "private": true,
+  "config": {
+    "nuxt": {
+      "host": "localhost",
+      "port": "3000"
+    }
+  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -13,13 +19,23 @@
     "test": "jest"
   },
   "dependencies": {
-    "nuxt": "^2.0.0",
+    "@casl/ability": "^3.4.0",
+    "@casl/vue": "^0.5.1",
+    "@feathersjs/authentication-client": "^4.5.2",
+    "@feathersjs/feathers": "^4.5.2",
+    "@feathersjs/socketio-client": "^4.5.2",
+    "@nuxtjs/dotenv": "^1.4.0",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "@nuxtjs/dotenv": "^1.4.0"
+    "@vue/composition-api": "^0.5.0",
+    "feathers-hooks-common": "^5.0.2",
+    "feathers-vuex": "^3.9.0",
+    "nuxt": "^2.0.0",
+    "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/moment": "^1.6.0",
     "@nuxtjs/vuetify": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",

@@ -3,6 +3,10 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   mode: 'spa',
   /*
+   ** Router settings
+   */
+  router: { middleware: ['auth'] },
+  /*
    ** Headers of the page
    */
   head: {
@@ -30,14 +34,19 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+    '~/plugins/ability.js',
+    '~/plugins/casl.js',
+    '~/plugins/feathers-vuex.js'
+  ],
   /*
    ** Nuxt.js dev-modules
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    '@nuxtjs/moment'
   ],
   /*
    ** Nuxt.js modules
@@ -57,7 +66,7 @@ export default {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#4c98d2',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -69,12 +78,21 @@ export default {
     }
   },
   /*
+   ** moment module configuration
+   ** https://github.com/nuxt-community/moment-module
+   */
+  moment: {
+    defaultLocale: 'fr',
+    locales: ['fr']
+  },
+  /*
    ** Build configuration
    */
   build: {
     /*
      ** You can extend webpack config here
      */
+    transpile: ['feathers-vuex'],
     extend(config, ctx) {}
   }
 }

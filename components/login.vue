@@ -1,6 +1,6 @@
 <template lang="pug">
   v-card
-    form(autocomplete="on", @submit.prevent="submit()")
+    form(autocomplete="on", @submit.prevent="login()")
       v-card-title
         span login
       v-card-text
@@ -14,6 +14,10 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import { unpackRules } from '@casl/ability/extra'
+import { decode as decodeJWT } from 'jsonwebtoken'
+
 export default {
   data() {
     return {
@@ -21,9 +25,26 @@ export default {
       password: ''
     }
   },
+  computed: {
+    ...mapGetters({
+      isAuth: 'auth/isAuthenticated'
+    })
+  },
   methods: {
-    submit() {
-      console.log(this.email, this.password)
+    ...mapActions({
+      auth: 'auth/authenticate'
+    }),
+    async login() {
+      const response = await this.auth({
+        strategy: 'local',
+        email: this.email,
+        password: this.password
+      })
+      const payload = decodeJWT(response.accessToken)
+      this.$ability.update(unpackRules(payload.rules))
+      if (this.isAuth) {
+        this.$router.push({ name: 'index' })
+      }
     }
   }
 }
