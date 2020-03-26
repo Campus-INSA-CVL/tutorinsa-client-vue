@@ -30,9 +30,9 @@
                 v-card-actions
                   v-spacer
                   v-chip(color="primary", small, @click="editItem(item)").mr-2
-                    v-icon(small) {{mdiPencil}}
+                    v-icon(small) {{svg.mdiPencil}}
                   v-chip(color="red", small, @click="deleteItem(item)")
-                    v-icon(small) {{mdiDelete}}
+                    v-icon(small) {{svg.mdiDelete}}
       v-dialog(v-model="dialog")
         v-card
           v-card-title modifier l'item

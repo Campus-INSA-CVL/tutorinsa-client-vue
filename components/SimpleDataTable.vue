@@ -13,7 +13,7 @@
             v-dialog( max-width="300", v-model="dialog")
               template(v-slot:activator="{on}")
                 v-btn(depressed, color="primary--text", v-on="on")
-                  v-icon {{mdiPlus}}
+                  v-icon {{svg.mdiPlus}}
               v-card
                 v-card-title {{formTitle}}
                 v-card-text
@@ -26,9 +26,9 @@
 
         template(v-slot:item.actions="{item}")
           v-chip(color="primary", small, @click="editItem(item)").mr-2
-            v-icon(small) {{mdiPencil}}
+            v-icon(small) {{svg.mdiPencil}}
           v-chip(color="red", small, @click="deleteItem(item)")
-            v-icon(small) {{mdiDelete}}
+            v-icon(small) {{svg.mdiDelete}}
 </template>
 
 <script>
