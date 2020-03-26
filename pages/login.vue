@@ -1,6 +1,8 @@
 <template lang="pug">
-  v-row(justify="center")
-    v-col(cols="12", sm="6", md="4")
+  v-row(align="start", justify="center")
+    v-col(cols="12", align="center")
+      v-img(alt="logo de l'association TutorINSA", :src="require('~/assets/img/icon.png')", width="200")
+    v-col(cols="12",xs="10", sm="8", md="6", lg="4", align="center")
       login-app
 </template>
 
@@ -10,6 +12,10 @@ import Login from '@/components/login'
 export default {
   components: {
     'login-app': Login
-  }
+  },
+  data() {
+    return {}
+  },
+  layout: 'empty'
 }
 </script>

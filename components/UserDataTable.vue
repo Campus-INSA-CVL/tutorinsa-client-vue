@@ -30,9 +30,9 @@
                 v-card-actions
                   v-spacer
                   v-chip(color="primary", small, @click="editItem(item)").mr-2
-                    v-icon(small) mdi-pencil
+                    v-icon(small) {{mdiPencil}}
                   v-chip(color="red", small, @click="deleteItem(item)")
-                    v-icon(small) mdi-delete
+                    v-icon(small) {{mdiDelete}}
       v-dialog(v-model="dialog")
         v-card
           v-card-title modifier l'item
@@ -62,12 +62,18 @@
 import { FeathersVuexFind } from 'feathers-vuex'
 import { mapGetters } from 'vuex'
 
+import { mdiPencil, mdiDelete } from '@mdi/js'
+
 export default {
   components: {
     FeathersVuexFind
   },
   data() {
     return {
+      svg: {
+        mdiPencil,
+        mdiDelete
+      },
       dialog: false,
       editedId: -1,
       editedItem: {
@@ -90,17 +96,17 @@ export default {
       }
     }
   },
-  watch: {
-    dialog(val) {
-      val || this.close()
-    }
-  },
   computed: {
     ...mapGetters({
       findSubjects: 'subjects/find',
       findYears: 'years/find',
       findDepartments: 'departments/find'
     })
+  },
+  watch: {
+    dialog(val) {
+      val || this.close()
+    }
   },
   methods: {
     editItem(item) {

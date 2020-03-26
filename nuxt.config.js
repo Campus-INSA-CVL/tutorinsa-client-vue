@@ -26,7 +26,19 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: {
+    color: 'linear-gradient(to right, #42bdee, #5673b7)',
+    height: '2px',
+    throttle: 0
+  },
+  /*
+   ** Customize the loading indicator color
+   */
+  loadingIndicator: {
+    name: 'three-bounce',
+    color: 'white',
+    background: 'linear-gradient(to right, #42bdee, #5673b7)'
+  },
   /*
    ** Global CSS
    */
@@ -62,10 +74,23 @@ export default {
    */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    defaultAssets: false,
+    icons: {
+      iconfont: 'mdiSvg'
+    },
     theme: {
       dark: true,
       themes: {
         dark: {
+          primary: '#4c98d2',
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3
+        },
+        light: {
           primary: '#4c98d2',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,

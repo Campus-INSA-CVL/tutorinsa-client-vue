@@ -13,7 +13,7 @@
             v-dialog( max-width="300", v-model="dialog")
               template(v-slot:activator="{on}")
                 v-btn(depressed, color="primary--text", v-on="on")
-                  v-icon mdi-plus
+                  v-icon {{mdiPlus}}
               v-card
                 v-card-title {{formTitle}}
                 v-card-text
@@ -26,13 +26,14 @@
 
         template(v-slot:item.actions="{item}")
           v-chip(color="primary", small, @click="editItem(item)").mr-2
-            v-icon(small) mdi-pencil
+            v-icon(small) {{mdiPencil}}
           v-chip(color="red", small, @click="deleteItem(item)")
-            v-icon(small) mdi-delete
+            v-icon(small) {{mdiDelete}}
 </template>
 
 <script>
 import { FeathersVuexFind } from 'feathers-vuex'
+import { mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 
 export default {
   name: 'SimpleDataTable',
@@ -67,6 +68,11 @@ export default {
   },
   data() {
     return {
+      svg: {
+        mdiDelete,
+        mdiPencil,
+        mdiPlus
+      },
       dialog: false,
       editedId: -1,
       editedItem: {

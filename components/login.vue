@@ -9,7 +9,7 @@
       v-card-actions
         v-spacer
         v-btn(type="submit")
-          v-icon(left) mdi-login-variant
+          v-icon(left) {{svg.mdiLoginVariant}}
           span login
 </template>
 
@@ -17,12 +17,16 @@
 import { mapGetters, mapActions } from 'vuex'
 import { unpackRules } from '@casl/ability/extra'
 import { decode as decodeJWT } from 'jsonwebtoken'
+import { mdiLoginVariant } from '@mdi/js'
 
 export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      svg: {
+        mdiLoginVariant
+      }
     }
   },
   computed: {
