@@ -27,7 +27,7 @@ export default {
    ** Customize the progress-bar color
    */
   loading: {
-    color: 'linear-gradient(to right, #42bdee, #5673b7)',
+    color: '#4c98d2',
     height: '2px',
     throttle: 0
   },
@@ -79,7 +79,7 @@ export default {
       iconfont: 'mdiSvg'
     },
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: '#4c98d2',
@@ -87,7 +87,7 @@ export default {
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
+          error: colors.red.accent4,
           success: colors.green.accent3
         },
         light: {
@@ -96,7 +96,7 @@ export default {
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
+          error: colors.red.accent4,
           success: colors.green.accent3
         }
       }

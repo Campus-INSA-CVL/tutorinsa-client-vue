@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-app
+  v-app(v-touch="{right: () => drawer = !drawer}")
     v-navigation-drawer(app, v-model="drawer")
 
       v-list(nav, flat)
@@ -13,6 +13,14 @@
             v-list-item-icon
               v-icon(left) {{svg.mdiLock}}
             v-list-item-title.text-uppercase admin
+      v-container
+        v-row(justify="center")
+          v-col(cols="12")
+            v-divider
+          v-col(cols="6", align="center")
+            v-btn(depressed, outlined, nuxt, to="/signup") sign up
+          v-col(cols="6", align="center")
+            v-btn(depressed, text, nuxt, to="/login") login
 
       template(v-slot:prepend)
         v-container(no-gutters)
@@ -37,12 +45,13 @@
     v-app-bar(app)
       v-app-bar-nav-icon(@click.stop="drawer = !drawer")
       v-toolbar-title
-        v-btn(depressed, to="/", nuxt, active-class="homeBtn") tutorinsa
+        v-btn(depressed, to="/", nuxt, active-class="homeBtn")
+          span.title.
+            #[span t]#[span.text-lowercase utor]#[span.primary--text.font-weight-bold INSA]
       v-spacer
       logout-app(v-if="isAuth")
-      v-btn(v-else, nuxt, to="/login", depressed)
-        v-icon(left) {{svg.mdiLoginVariant}}
-        span login
+      v-btn(v-if="!isAuth", nuxt, to="/signup", depressed, outlined) sign up
+      v-btn(v-if="!isAuth && $vuetify.breakpoint.smAndUp", nuxt, to="/login", depressed, text) login
     v-content
       v-container(fluid)
         transition
@@ -56,7 +65,8 @@ import {
   mdiLock,
   mdiHome,
   mdiInformation,
-  mdiHelpCircle
+  mdiHelpCircle,
+  mdiAccountPlus
 } from '@mdi/js'
 
 import Logout from '@/components/logout'
@@ -73,7 +83,8 @@ export default {
         mdiLock,
         mdiHome,
         mdiInformation,
-        mdiHelpCircle
+        mdiHelpCircle,
+        mdiAccountPlus
       },
       nav: [
         {
