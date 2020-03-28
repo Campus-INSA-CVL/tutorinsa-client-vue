@@ -79,10 +79,14 @@ export default {
       iconfont: 'mdiSvg'
     },
     theme: {
+      options: {
+        customProperties: true
+      },
       dark: true,
       themes: {
         dark: {
           primary: '#4c98d2',
+          eleve: colors.green.accent3,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -92,6 +96,7 @@ export default {
         },
         light: {
           primary: '#4c98d2',
+          eleve: colors.green.accent3,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
