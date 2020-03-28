@@ -1,5 +1,4 @@
-# build stage
-FROM node:lts-alpine as build-stage
+FROM node:lts-alpine
 
 ARG BASE_URL
 ARG API_URL
@@ -13,11 +12,5 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# production stage
-FROM node:lts-alpine as production-stage
-
-RUN npm i -g nuxt
-WORKDIR /usr/src/app/
-COPY --from=build-stage /app/dist .
 EXPOSE 3030
-CMD ["nuxt", "start"]
+CMD ["npm", "run", "start"]
