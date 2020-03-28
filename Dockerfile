@@ -17,7 +17,7 @@ RUN npm run build
 FROM node:lts-alpine as production-stage
 
 RUN npm i -g nuxt
-
-COPY --from=build-stage /app/dist /usr/src/app/
+WORKDIR /usr/src/app/
+COPY --from=build-stage /app/dist .
 EXPOSE 3030
 CMD ["nuxt", "start"]
