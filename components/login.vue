@@ -5,7 +5,7 @@
         v-card-title.text-uppercase.primary--text login
         v-card-text
           v-text-field(type="email", v-model="email", autofocus, :prepend-icon="svg.mdiEmail", label="email", :rules="rules.email")
-          v-text-field(type="password", v-model="password", :prepend-icon="svg.mdiLock", label="password", @click:append="show = !show", :append-icon="eyeIcon", :type="show ? 'text' : 'password'", :rules="rules.password")
+          v-text-field(type="password", v-model="password", :prepend-icon="svg.mdiLock", label="password", @click:append="show = !show", :append-icon="eyeIcon", :type="show ? 'text' : 'password'", :rules="rules.password", autocomplete="current-password")
           div.grey--text.lighten-1.text-right.
             #[span.text-capitalize pas] encore de compte ? #[nuxt-link(to="/signup").primary--text #[span.text-capitalize créer] le votre]
         v-card-actions
@@ -15,8 +15,11 @@
             span login
     v-snackbar(v-model="snackbar", color="error", :timeout="5000", top)
       v-row.ma-0.pa-0
-        v-col(cols="12", align="center").ma-0.pa-0.
-          #[span.text-uppercase email] et/ou #[span.text-uppercase password] incorrect
+        v-col(cols="12", align="center").ma-0.pa-0
+          template(v-if="error.code == 401").
+            #[span.text-uppercase email] et/ou #[span.text-uppercase password] incorrect
+          template(v-else-if="error.code == 408").
+            #[span.text-capitalize le] serveur ne répond pas ! #[span.text-capitalize veuillez] réessayer dans quelques minutes.
 </template>
 
 <script>
@@ -32,6 +35,7 @@ export default {
       password: '',
       show: false,
       snackbar: false,
+      error: {},
       svg: {
         mdiLoginVariant,
         mdiEmail,
@@ -77,7 +81,10 @@ export default {
         this.$router.push({ name: 'index' })
       } catch (error) {
         this.$nuxt.$loading.finish()
+        this.error = error
         if (error.code && error.code === 401) {
+          this.snackbar = true
+        } else if (error.code && error.code === 408) {
           this.snackbar = true
         }
       }

@@ -28,7 +28,7 @@ export default {
    */
   loading: {
     color: '#4c98d2',
-    height: '2px',
+    height: '4px',
     throttle: 0
   },
   /*
@@ -55,7 +55,7 @@ export default {
    ** Nuxt.js dev-modules
    */
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
+    // Doc: https://github.com/nuxt-communitys/eslint-module
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
     '@nuxtjs/moment'
@@ -79,7 +79,7 @@ export default {
       iconfont: 'mdiSvg'
     },
     theme: {
-      dark: false,
+      dark: true,
       themes: {
         dark: {
           primary: '#4c98d2',

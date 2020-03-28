@@ -1,7 +1,16 @@
 <template lang="pug">
-  p hello
+  v-row(justify="center")
+    v-col(cols="12",xs="10", sm="8", md="6", lg="5", align="center").mt-6
+      signup-app
 </template>
 
 <script>
-export default {}
+import Signup from '@/components/Signup'
+
+export default {
+  components: {
+    'signup-app': Signup
+  },
+  layout: 'empty'
+}
 </script>

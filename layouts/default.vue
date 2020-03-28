@@ -17,10 +17,14 @@
         v-row(justify="center")
           v-col(cols="12")
             v-divider
-          v-col(cols="6", align="center")
-            v-btn(depressed, outlined, nuxt, to="/signup") sign up
-          v-col(cols="6", align="center")
-            v-btn(depressed, text, nuxt, to="/login") login
+          template(v-if="!isAuth")
+            v-col(cols="6", align="center")
+              v-btn(depressed, outlined, nuxt, to="/signup") sign up
+            v-col(cols="6", align="center")
+              v-btn(depressed, text, nuxt, to="/login") login
+          template(v-else)
+            v-col(cols="6", align="center")
+              logout-app
 
       template(v-slot:prepend)
         v-container(no-gutters)
@@ -49,9 +53,9 @@
           span.title.
             #[span t]#[span.text-lowercase utor]#[span.primary--text.font-weight-bold INSA]
       v-spacer
-      logout-app(v-if="isAuth")
       v-btn(v-if="!isAuth", nuxt, to="/signup", depressed, outlined) sign up
-      v-btn(v-if="!isAuth && $vuetify.breakpoint.smAndUp", nuxt, to="/login", depressed, text) login
+      v-btn(v-else, nuxt, to="/profile", depressed, outlined, x-small, fab)
+        v-icon {{svg.mdiAccount}}
     v-content
       v-container(fluid)
         transition
@@ -66,7 +70,7 @@ import {
   mdiHome,
   mdiInformation,
   mdiHelpCircle,
-  mdiAccountPlus
+  mdiAccount
 } from '@mdi/js'
 
 import Logout from '@/components/logout'
@@ -84,7 +88,7 @@ export default {
         mdiHome,
         mdiInformation,
         mdiHelpCircle,
-        mdiAccountPlus
+        mdiAccount
       },
       nav: [
         {
@@ -93,14 +97,14 @@ export default {
           icon: 'mdiHome'
         },
         {
-          title: 'à propos',
-          link: '/about',
-          icon: 'mdiInformation'
-        },
-        {
           title: 'aide',
           link: '/help',
           icon: 'mdiHelpCircle'
+        },
+        {
+          title: 'à propos',
+          link: '/about',
+          icon: 'mdiInformation'
         }
       ]
     }

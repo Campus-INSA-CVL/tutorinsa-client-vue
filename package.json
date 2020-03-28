@@ -4,12 +4,6 @@
   "description": "Tutorinsa est une association de l'INSA Centre-Val de Loire. Cette application permet de demander et/ou fournir des cours de tutorats",
   "author": "Esteban S",
   "private": true,
-  "config": {
-    "nuxt": {
-      "host": "127.0.0.1",
-      "port": "3000"
-    }
-  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
