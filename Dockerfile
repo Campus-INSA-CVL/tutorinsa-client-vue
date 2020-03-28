@@ -20,4 +20,4 @@ RUN npm i -g nuxt
 
 COPY --from=build-stage /app/dist /usr/src/app/
 EXPOSE 3030
-CMD ["npm", "run", "start"]
+CMD ["nuxt", "start"]
