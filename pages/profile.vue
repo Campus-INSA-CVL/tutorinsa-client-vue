@@ -1,15 +1,15 @@
 <template lang="pug">
-  h1 profile page {{user}}
+  v-row(justify="center")
+    v-col(cols="12", md="6", lg="4")
+      user-app
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import User from '@/components/User'
 
 export default {
-  computed: {
-    ...mapGetters({
-      user: 'auth/user'
-    })
+  components: {
+    'user-app': User
   }
 }
 </script>

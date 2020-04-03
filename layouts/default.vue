@@ -45,7 +45,6 @@
             v-col(cols="6", justify="center")
               v-switch(v-model="$vuetify.theme.dark", inset, :label='formatTheme', hide-details).my-2
 
-
     v-app-bar(app)
       v-app-bar-nav-icon(@click.stop="drawer = !drawer")
       v-toolbar-title
