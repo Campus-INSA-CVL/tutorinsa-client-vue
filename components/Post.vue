@@ -16,7 +16,7 @@
         v-icon(small, left, v-if="post.creator") {{svg.mdiAccountEdit}}
         span(v-if="post.creator") {{post.creator.firstName}}
 
-      v-card-text.text-justify.body-1 {{post.comment}}
+      v-card-text.text-justify.body-1.text-truncate {{post.comment}}
 
       v-card-actions
         v-spacer
