@@ -112,7 +112,7 @@ export default {
    ** https://github.com/nuxt-community/moment-module
    */
   moment: {
-    defaultLocale: 'en',
+    defaultLocale: 'fr',
     locales: ['fr']
   },
   /*

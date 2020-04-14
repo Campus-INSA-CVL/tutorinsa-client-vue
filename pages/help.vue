@@ -12,6 +12,11 @@ export default {
   components: {
     'tutorinsa-app': TutorInsa,
     'title-app': Title
+  },
+  head() {
+    return {
+      title: 'Aide'
+    }
   }
 }
 </script>
