@@ -2,19 +2,21 @@
   v-hover(v-slot:default="{ hover }")
     v-card(:class="isEleve(post.type) ? 'student': 'tutor'", :elevation="hover ? 12 : 4" )
 
-      v-card-title.
-        #[span.text-capitalize.font-weight-bold {{post.subject.name}}]
+      v-card-title
+        span.text-uppercase.font-weight-bold {{post.subject.name}}
+        span.subtitle-2 &nbsp;({{$moment(post.date).fromNow()}})
 
       v-card-subtitle
-        span.text-capitalize date:&nbsp;
-        span.text-capitalize {{$moment(post.date).local().format('dddd LL [à] LT')}}
-        span &nbsp;({{$moment(post.date).fromNow()}})
+        v-icon(small, left) {{svg.mdiCalendar}}
+        span.text-capitalize &nbsp;{{$moment(post.date).local().format('dddd LL')}}
         br
-        span.text-capitalize durée:&nbsp;
-        span {{$moment(post.duration).utc().format('H [heures]  m')}}
+        v-icon(small, left) {{svg.mdiClockOutline}}
+        span {{$moment(post.date).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;({{$moment(post.duration).utc().format('HH[:]mm')}})
+        br
+        v-icon(small, left, v-if="post.creator") {{svg.mdiAccountEdit}}
+        span(v-if="post.creator") {{post.creator.firstName}}
 
-      v-card-text.text-justify.
-        #[span {{post.comment}}] #[span(v-if="post.creator") par {{post.creator.firstName}}]
+      v-card-text.text-justify.body-1 {{post.comment}}
 
       v-card-actions
         v-spacer
@@ -23,6 +25,8 @@
 </template>
 
 <script>
+import { mdiClockOutline, mdiCalendar, mdiAccountEdit } from '@mdi/js'
+
 export default {
   props: {
     post: {
@@ -33,7 +37,13 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      svg: {
+        mdiClockOutline,
+        mdiCalendar,
+        mdiAccountEdit
+      }
+    }
   },
   methods: {
     isEleve(type) {
@@ -43,8 +53,12 @@ export default {
       try {
         await navigator.share({
           url: `post/${post._id}`,
-          text: post.comment,
-          title: post.subject.name
+          text: `${this.$moment(post.date)
+            .local()
+            .format('[Le] dddd LL [à] LT')}\n\nLe mot du tuteur: ${
+            post.comment
+          }\n`,
+          title: `TutorINSA: ${post.subject.name.toUpperCase()}`
         })
       } catch (error) {
         console.log(error)

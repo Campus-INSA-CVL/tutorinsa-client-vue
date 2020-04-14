@@ -1,7 +1,7 @@
 <template lang="pug">
   v-card(outlined, v-if="post")
-    v-card-title {{post.subject.name}}
-    v-card-text
+    v-card-title.text-uppercase {{post.subject.name}}
+    v-card-text.body-1 {{post.comment}}
     v-card-actions
     p {{post}}
 </template>
