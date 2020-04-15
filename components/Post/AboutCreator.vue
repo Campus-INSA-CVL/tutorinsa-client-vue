@@ -1,15 +1,15 @@
 <template lang="pug">
-component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave, v-if="tutor")
-  v-skeleton-loader(type="card", v-if="loading")
-  v-card(outlined, v-else)
+  //- component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave, v-if="tutor")
+  //-   v-skeleton-loader(type="card", v-if="loading")
+  v-card(outlined)
     v-card-title #[span.text-capitalize à]&nbsp;propos du tuteur
     v-card-text
       div
         v-icon(left, small) {{svg.mdiAccount}}
-        | #[span.text-uppercase {{tutor.lastName}}] #[span.text-capitalize {{tutor.firstName}}]
+        | #[span.text-uppercase {{creator.lastName}}] #[span.text-capitalize {{creator.firstName}}]
       div
         v-icon(left, small) {{svg.mdiEmail}}
-        | {{tutor.email}}
+        | {{creator.email}}
       div
         v-icon(left, small) {{svg.mdiCardText}}
         | année
@@ -25,7 +25,7 @@ import { mdiAccount, mdiStar, mdiCardText, mdiEmail } from '@mdi/js'
 
 export default {
   props: {
-    tutor: {
+    creator: {
       type: Object,
       default: () => null
     }
@@ -38,7 +38,7 @@ export default {
         mdiCardText,
         mdiEmail
       },
-      transition: 'scale-transition'
+      transition: 'fade-transition'
     }
   },
   computed: {

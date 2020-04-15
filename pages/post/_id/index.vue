@@ -1,37 +1,70 @@
 <template lang="pug">
   v-row
     v-col(cols="12", md="7")
-      post-app(:postId="$route.params.id" @postTitle="setTitle" @postTutor="setTutor")
+      component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
+        v-skeleton-loader(type="article, list-item-three-line, actions", v-if="loading")
+        post-app(:post="post", v-else)
     v-col(cols="6", md="5")
-      about-tutor-app(:tutor="tutor")
+      component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
+        v-skeleton-loader(type="article", v-if="loading")
+        about-creator-app(:creator="post.creator", v-else)
 </template>
 
 <script>
-import Post from '@/components/Post'
-import AboutTutor from '@/components/AboutTutor'
+import { mapGetters, mapActions } from 'vuex'
+
+import { EventBus } from '@/utils/event-bus'
+
+import Post from '@/components/Post/Post'
+import AboutCreator from '@/components/Post/AboutCreator'
 
 export default {
   components: {
     'post-app': Post,
-    'about-tutor-app': AboutTutor
+    'about-creator-app': AboutCreator
   },
+  async fetch() {
+    try {
+      let response = await this.getPost(this.$route.params.id)
+      if (response === null) {
+        response = await this.fetchPost(this.$route.params.id)
+      }
+      this.post = response
+    } catch (error) {
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est surevenu lors du chargement des données',
+        active: true,
+        close: true
+      })
+    }
+  },
+  fetchOnServer: false,
   data() {
     return {
-      title: null,
-      tutor: null
+      transition: 'fade-transition',
+      post: null
+    }
+  },
+  computed: {
+    ...mapGetters({
+      getPost: 'posts/get'
+    }),
+    title() {
+      return this.post ? this.post.subject.name.toUpperCase() : 'Chargement...'
+    },
+    loading() {
+      return this.post === null
     }
   },
   methods: {
-    setTitle(event) {
-      this.title = event
-    },
-    setTutor(event) {
-      this.tutor = event
-    }
+    ...mapActions({
+      fetchPost: 'posts/get'
+    })
   },
   head() {
     return {
-      title: this.title ? this.title.toUpperCase() : 'Chargement...'
+      title: this.title
     }
   }
 }

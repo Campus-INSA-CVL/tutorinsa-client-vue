@@ -57,6 +57,7 @@
         v-icon {{svg.mdiAccount}}
     v-content
       v-container(fluid)
+        snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
         transition
           nuxt
 </template>
@@ -72,14 +73,19 @@ import {
   mdiAccount
 } from '@mdi/js'
 
+import { EventBus } from '@/utils/event-bus'
+
 import Logout from '@/components/logout'
+import Snack from '@/components/Misc/GlobalSnack'
 
 export default {
   components: {
-    'logout-app': Logout
+    'logout-app': Logout,
+    'snack-app': Snack
   },
   data() {
     return {
+      snack: null,
       drawer: false,
       svg: {
         mdiLoginVariant,
@@ -122,7 +128,18 @@ export default {
     formatTheme() {
       return this.$vuetify.theme.dark ? 'Sombre' : 'Lumineuse'
     }
-  }
+  },
+  mounted() {
+    EventBus.$on('snackEvent', (event) => {
+      this.snack = event
+      setTimeout(() => (this.snack = null), 5000)
+    })
+    EventBus.$on('closeSnack', () => {
+      this.snack.active = false
+      this.snack = null
+    })
+  },
+  methods: {}
 }
 </script>
 
