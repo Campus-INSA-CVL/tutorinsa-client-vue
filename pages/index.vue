@@ -14,8 +14,8 @@
             #[span.text-capitalize ensemble] des annonces
           section(slot-scope="{ items: posts }")
             v-row(justify="space-around")
-              v-col(cols="12", md="6", lg="3",v-for="(post, index) in posts", :key="index")
-                post-app(:post="post")
+              v-col(cols="12", md="6", lg="4",v-for="(post, index) in posts", :key="index")
+                preview-post-app(:post="post")
 </template>
 
 <script>
@@ -24,7 +24,7 @@ import { FeathersVuexFind } from 'feathers-vuex'
 import Title from '@/components/Title'
 import Tutorinsa from '@/components/TutorInsa'
 import Signup from '@/components/Signup'
-import Post from '@/components/Post'
+import PreviewPost from '@/components/PreviewPost'
 import Welcome from '@/components/Welcome'
 
 export default {
@@ -33,7 +33,7 @@ export default {
     'title-app': Title,
     'tutorinsa-app': Tutorinsa,
     'signup-app': Signup,
-    'post-app': Post,
+    'preview-post-app': PreviewPost,
     'welcome-app': Welcome
   },
   computed: {
