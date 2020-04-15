@@ -1,5 +1,7 @@
 <template lang="pug">
-  v-card(outlined, v-if="tutor")
+component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave, v-if="tutor")
+  v-skeleton-loader(type="card", v-if="loading")
+  v-card(outlined, v-else)
     v-card-title #[span.text-capitalize à]&nbsp;propos du tuteur
     v-card-text
       div
@@ -35,7 +37,13 @@ export default {
         mdiStar,
         mdiCardText,
         mdiEmail
-      }
+      },
+      transition: 'scale-transition'
+    }
+  },
+  computed: {
+    loading() {
+      return this.tutor === null
     }
   }
 }
