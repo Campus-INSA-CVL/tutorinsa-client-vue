@@ -15,7 +15,7 @@
 
 <script>
 import SimpleDataTable from '@/components/SimpleDataTable'
-import UserDataTable from '@/components/UserDataTable'
+import UserDataTable from '@/components/Admin/UserDataTable'
 
 export default {
   components: {

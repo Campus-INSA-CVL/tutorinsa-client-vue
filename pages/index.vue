@@ -2,7 +2,7 @@
   div
     v-row(align="start" v-if="!isAuth")
       v-col(cols="12", md="6", align="center")
-        v-img(alt="logo de l'association TutorINSA", :src="require('~/assets/img/logo_white.png')", width="200").mb-4
+        v-img(alt="logo de l'association TutorINSA", :src="require(`~/assets/img/logo_${$vuetify.theme.dark ? 'white' : 'black'}.png`)", width="200").mb-4#main-logo
         title-app(center) #[span.text-capitalize bienvenue] sur #[tutorinsa-app]
         welcome-app
       v-col(cols="6", v-if="$vuetify.breakpoint.mdAndUp")

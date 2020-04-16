@@ -1,6 +1,4 @@
 <template lang="pug">
-  //- component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave, v-if="tutor")
-  //-   v-skeleton-loader(type="card", v-if="loading")
   v-card(outlined)
     v-card-title #[span.text-capitalize à]&nbsp;propos du tuteur
     v-card-text

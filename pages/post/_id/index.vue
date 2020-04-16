@@ -4,7 +4,7 @@
       component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
         v-skeleton-loader(type="article, list-item-three-line, actions", v-if="loading")
         post-app(:post="post", v-else)
-    v-col(cols="6", md="5")
+    v-col(cols="6", md="5", v-if="post && post.creator")
       component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
         v-skeleton-loader(type="article", v-if="loading")
         about-creator-app(:creator="post.creator", v-else)

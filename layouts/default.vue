@@ -129,7 +129,19 @@ export default {
       return this.$vuetify.theme.dark ? 'Sombre' : 'Lumineuse'
     }
   },
+  watch: {
+    '$vuetify.theme.dark'(a) {
+      localStorage.setItem('dark', JSON.stringify(a))
+    }
+  },
   mounted() {
+    if (localStorage.getItem('dark')) {
+      try {
+        this.$vuetify.theme.dark = JSON.parse(localStorage.getItem('dark'))
+      } catch (error) {
+        localStorage.removeItem('dark')
+      }
+    }
     EventBus.$on('snackEvent', (event) => {
       this.snack = event
       setTimeout(() => (this.snack = null), 5000)
@@ -138,8 +150,7 @@ export default {
       this.snack.active = false
       this.snack = null
     })
-  },
-  methods: {}
+  }
 }
 </script>
 

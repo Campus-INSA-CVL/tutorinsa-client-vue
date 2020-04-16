@@ -1,17 +1,18 @@
 <template lang="pug">
   FeathersVuexFind(service="users", :query="{}")
     section(slot-scope="{ items: users }")
-      v-data-iterator(:items="users")
+      v-data-iterator(:items="users", :items-per-page.sync="itemsPerPage", :sort-by="sortBy.toLowerCase()", :sort-desc="sortDesc", :page="page", hide-default-footer, :search="search")
         template(v-slot:header)
-          v-toolbar()
+          v-toolbar
             v-toolbar-title utilisateurs
+            v-text-field(v-model="search", clearable, single-line, hide-details, :prepend-icon="svg.mdiMagnify", label="recherche par courriel")
         template(v-slot:default="props")
           v-row
-            v-col(v-for="item in props.items", :key="item.email", cols="12", sm="6", md="4", lg="3")
+            v-col(v-for="(item, indice) in props.items", :key="item.email", cols="12", sm="6", md="4", lg="3")
               v-card
                 v-card-title
-                  div.
-                    #[span.text-uppercase {{ item.lastName }}] #[span.text-capitalize {{ item.firstName }}]
+                  div #[span.text-uppercase {{ item.lastName }}] #[span.text-capitalize {{ item.firstName }}]
+
                 v-card-subtitle {{item.email}}
                 v-card-text
                   div année: {{item.year.name}}
@@ -27,6 +28,7 @@
                     li {{perm}}
                   div mise à jour le {{ $moment(item.updatedAt).format('LL [à] LT') }} ({{ $moment(item.updatedAt).fromNow() }})
                   div créé le {{ $moment(item.createdAt).format('LL [à] LT') }} ({{ $moment(item.createdAt).fromNow() }})
+
                 v-card-actions
                   v-spacer
                   v-chip(color="primary", small, @click="editItem(item)").mr-2
@@ -62,7 +64,7 @@
 import { FeathersVuexFind } from 'feathers-vuex'
 import { mapGetters } from 'vuex'
 
-import { mdiPencil, mdiDelete } from '@mdi/js'
+import { mdiPencil, mdiDelete, mdiMagnify } from '@mdi/js'
 
 export default {
   components: {
@@ -70,9 +72,16 @@ export default {
   },
   data() {
     return {
+      search: '',
+      sortBy: 'lastName',
+      sortDesc: false,
+      page: 1,
+      itemsPerPage: 4,
+      itemsPerPageArray: [4, 8, 12],
       svg: {
         mdiPencil,
-        mdiDelete
+        mdiDelete,
+        mdiMagnify
       },
       dialog: false,
       editedId: -1,
