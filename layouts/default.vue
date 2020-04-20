@@ -52,9 +52,12 @@
           span.title.
             #[span t]#[span.text-lowercase utor]#[span.primary--text.font-weight-bold INSA]
       v-spacer
-      v-btn(v-if="!isAuth", nuxt, to="/signup", depressed, outlined) sign up
-      v-btn(v-else, nuxt, to="/profile", depressed, outlined, x-small, fab)
-        v-icon {{svg.mdiAccount}}
+      v-row(justify="center")
+        v-col(align="end")
+          v-btn(v-if="!isAuth", nuxt, to="/signup", depressed, outlined) sign up
+          form-post-app(v-if="isAuth")
+          v-btn(v-if="isAuth", nuxt, to="/profile", depressed, outlined fab, x-small).ml-4
+            v-icon() {{svg.mdiAccount}}
     v-content
       v-container(fluid)
         snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
@@ -77,11 +80,13 @@ import { EventBus } from '@/utils/event-bus'
 
 import Logout from '@/components/logout'
 import Snack from '@/components/Misc/GlobalSnack'
+import FormPost from '@/components/Post/FormPost'
 
 export default {
   components: {
     'logout-app': Logout,
-    'snack-app': Snack
+    'snack-app': Snack,
+    'form-post-app': FormPost
   },
   data() {
     return {

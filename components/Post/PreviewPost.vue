@@ -13,7 +13,7 @@
         v-icon(small, left) {{svg.mdiClockOutline}}
         span {{$moment(post.date).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;({{$moment(post.duration).utc().format('HH[:]mm')}})
         br
-        v-icon(small, left, v-if="post.creator") {{svg.mdiAccountEdit}}
+        v-icon(small, left, v-if="post.creator") {{svg.mdiSchool}}
         span(v-if="post.creator")  {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
 
       v-card-text.text-justify.body-1.text-truncate {{post.comment}}
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mdiClockOutline, mdiCalendar, mdiAccountEdit } from '@mdi/js'
+import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
 
 export default {
   props: {
@@ -41,7 +41,7 @@ export default {
       svg: {
         mdiClockOutline,
         mdiCalendar,
-        mdiAccountEdit
+        mdiSchool
       }
     }
   },

@@ -6,7 +6,7 @@
 
       div #[v-icon(left) {{svg.mdiClockOutline}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold où ?] #[span &nbsp;{{$moment(post.date).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;](durée: {{$moment(post.duration).utc().format('HH[\']mm["]')}}) #[span(v-if="post.room") en {{post.room.name}} à {{post.room.campus.toUpperCase()}}]
 
-      //div(v-if="post.creator") #[v-icon(left) {{svg.mdiAccountEdit}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold par qui ?] {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
+      div(v-if="post.creator") #[v-icon(left) {{svg.mdiSchool}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold par qui ?] {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
 
       div(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").title.mt-4 #[span.text-capitalize le]&nbsp;message du tuteur:
       div.text-justify {{post.comment}}
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mdiClockOutline, mdiCalendar, mdiAccountEdit } from '@mdi/js'
+import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
       svg: {
         mdiClockOutline,
         mdiCalendar,
-        mdiAccountEdit
+        mdiSchool
       }
     }
   },

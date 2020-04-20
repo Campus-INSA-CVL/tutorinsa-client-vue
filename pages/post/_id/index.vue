@@ -33,7 +33,7 @@ export default {
     } catch (error) {
       EventBus.$emit('snackEvent', {
         color: 'error',
-        message: 'Une erreur est surevenu lors du chargement des données',
+        message: 'Une erreur est survenue lors du chargement des postes',
         active: true,
         close: true
       })
