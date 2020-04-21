@@ -62,7 +62,7 @@
                         v-menu(ref="startMenu", :close-on-content-click="false", v-model="startMenu", offset-y,  transition="slide-y-reverse-transition", :return-value.sync="editedItem.time", top, :nudge-top="10", origin="bottom center")
                           template(v-slot:activator="{on}")
                             v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiClockOutline", v-model="editedItem.time", outlined, :disabled="!editedItem.roomId", label="Début du tutorat", :color="colorPost", :rules="[rules.required, rules.patternTime]")
-                          v-time-picker(v-if="startMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.time",  @click:minute="$refs.startMenu.save(editedItem.time)", :color="colorPost", :min="minStartTimePicker", :max="maxStartTimePicker", :allowed-minutes="allowedMinutes")
+                          v-time-picker(v-if="startMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.time",  @click:minute="$refs.startMenu.save(editedItem.time)", :color="colorPost", :min="minStartTimePicker", :max="maxStartTimePicker", :allowed-minutes="allowedMinutes", :allowed-hours="allowedHours")
 
 
 
@@ -164,20 +164,20 @@ export default {
           this.$moment(this.editedItem.date).isValid() || 'Date non valide',
         patternTime: (v) => /\d{2}:(00|30)/g.test(v) || 'Temps invalide'
       },
-      dialog: false,
+      dialog: true,
       valid: true,
       durationMenu: false,
       dateMenu: false,
       startMenu: false,
       editedItem: {
-        campus: null,
-        date: null,
-        subjectId: null,
+        campus: 'bourges',
+        date: '2020-04-27',
+        subjectId: '5e455e03d04d8937b8396214',
         comment: '',
         duration: '',
         time: '',
         type: 'tuteur',
-        roomId: null
+        roomId: '5e9c74aad9f9d0547cddd91f'
       },
       resetItem: {
         campus: null,
@@ -491,6 +491,42 @@ export default {
         return available
       }
       return false
+    },
+    allowedHours(h) {
+      console.debug('h:', h)
+      let available = true
+
+      const date = this.$moment.utc(this.editedItem.date).format()
+      const calendars = this.findCalendars({
+        query: { roomId: this.editedItem.roomId, date: { $gte: date } }
+      })
+      if (calendars.data.length === 0) {
+        return true
+      }
+      console.log('calendars:', calendars)
+
+      if (calendars.data[0].slots) {
+        const date = calendars.data[0].date
+        let viewTimes = 0
+        calendars.data[0].slots.forEach((slot) => {
+          const obj = Object.assign({}, slot)
+          const startAtSlot = this.$moment(obj.startAt)
+          const hours = startAtSlot.hours()
+          if (hours === h) {
+            if (startAtSlot.isSame(date)) {
+              available = false
+            }
+            viewTimes++
+          }
+          // same with endAt
+        })
+        if (viewTimes === 2) {
+          available = false
+        }
+      } else {
+        return true
+      }
+      return available
     },
     cancel() {
       Object.assign(this.editedItem, this.resetItem)
