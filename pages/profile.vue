@@ -23,6 +23,17 @@ export default {
     ...mapGetters({
       user: 'auth/user'
     })
+  },
+  transition: {
+    name: 'page',
+    mode: 'out-in'
+  },
+  head() {
+    return {
+      title: 'Profile'
+    }
   }
 }
 </script>
+
+<style></style>

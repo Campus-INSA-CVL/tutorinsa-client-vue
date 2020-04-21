@@ -12,7 +12,7 @@
         FeathersVuexFind(service="posts", :query="{$sort: {date: 1}}")
           h1.title.
             #[span.text-capitalize ensemble] des annonces
-          section(slot-scope="{ items: posts }")
+          section(slot-scope="{ items: posts , isFindPending }")
             v-row(justify="space-around")
               v-col(cols="12", sm="6", lg="4",v-for="(post, index) in posts", :key="index", align-self="center")
                 preview-post-app(:post="post", shareBtn)
@@ -40,6 +40,10 @@ export default {
     ...mapGetters({
       isAuth: 'auth/isAuthenticated'
     })
+  },
+  transition: {
+    name: 'page',
+    mode: 'out-in'
   },
   head() {
     return {

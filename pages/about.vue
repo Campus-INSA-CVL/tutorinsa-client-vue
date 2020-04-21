@@ -29,6 +29,10 @@ export default {
     'welcome-app': Welcome,
     'site-app': Site
   },
+  transition: {
+    name: 'page',
+    mode: 'out-in'
+  },
   head() {
     return {
       title: 'À propos'

@@ -13,6 +13,10 @@ export default {
     'tutorinsa-app': TutorInsa,
     'title-app': Title
   },
+  transition: {
+    name: 'page',
+    mode: 'out-in'
+  },
   head() {
     return {
       title: 'Aide'

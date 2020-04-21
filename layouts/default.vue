@@ -61,8 +61,7 @@
     v-content
       v-container(fluid)
         snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
-        transition
-          nuxt
+        nuxt
 </template>
 
 <script>
