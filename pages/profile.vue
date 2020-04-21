@@ -1,15 +1,28 @@
 <template lang="pug">
-  v-row(justify="center")
-    v-col(cols="12", md="6", lg="4")
-      user-app
+  v-row(justify="start")
+    v-col(cols="12", sm="8", md="6", lg="4")
+      user-app(:user="user")
+    v-col(cols="12", sm="4", md="6", lg="8").pt-0
+      v-row()
+        v-col(v-for="(post, index) in user.createdPosts",:key="index", cols="12", md="6")
+          preview-post-app(:post="post")
 </template>
 
 <script>
-import User from '@/components/User'
+import { mapGetters } from 'vuex'
+
+import User from '@/components/User/User'
+import PreviewPost from '@/components/Post/PreviewPost'
 
 export default {
   components: {
-    'user-app': User
+    'user-app': User,
+    'preview-post-app': PreviewPost
+  },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    })
   }
 }
 </script>

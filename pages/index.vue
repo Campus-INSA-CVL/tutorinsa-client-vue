@@ -15,13 +15,13 @@
           section(slot-scope="{ items: posts }")
             v-row(justify="space-around")
               v-col(cols="12", sm="6", lg="4",v-for="(post, index) in posts", :key="index", align-self="center")
-                preview-post-app(:post="post")
+                preview-post-app(:post="post", shareBtn)
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { FeathersVuexFind } from 'feathers-vuex'
-import Title from '@/components/Title'
+import Title from '@/components/Misc/Title'
 import Tutorinsa from '@/components/TutorInsa'
 import Signup from '@/components/Signup'
 import PreviewPost from '@/components/Post/PreviewPost'

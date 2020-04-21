@@ -6,7 +6,7 @@
 
 <script>
 import TutorInsa from '@/components/TutorInsa'
-import Title from '@/components/Title'
+import Title from '@/components/Misc/Title'
 
 export default {
   components: {

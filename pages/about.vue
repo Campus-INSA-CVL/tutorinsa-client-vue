@@ -18,7 +18,7 @@
 
 <script>
 import TutorInsa from '@/components/TutorInsa'
-import Title from '@/components/Title'
+import Title from '@/components/Misc/Title'
 import Welcome from '@/components/Welcome'
 import Site from '@/components/Site'
 

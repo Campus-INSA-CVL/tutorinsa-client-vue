@@ -20,7 +20,7 @@
 
       v-card-actions
         v-spacer
-        v-btn(depressed, outlined, @click="share(post)") partager
+        v-btn(depressed, outlined, @click="share(post)", v-if="shareBtn") partager
         v-btn(depressed, :color="isEleve(post.type) ? 'eleve': 'primary'", nuxt, :to="`/post/${post._id}`") voir plus
 </template>
 
@@ -34,6 +34,10 @@ export default {
       default() {
         return {}
       }
+    },
+    shareBtn: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

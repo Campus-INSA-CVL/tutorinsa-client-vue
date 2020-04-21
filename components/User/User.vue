@@ -39,7 +39,10 @@ div
       v-btn(color="primary", @click="editItem()") modifier
       v-btn(color="red", outlined, @click="deleteUser()") supprimer
 
-  h1(v-else) Vous n'êtes pas connecté !
+  title-app(v-else, textCenter)
+    | #[span.text-capitalize vous] n'avez pas accès à cette page !
+    br
+    | #[span.text-capitalize connectez] vous pour accéder à votre profil !
   v-dialog(v-model="dialog", max-width="500")
     v-card
       v-card-title modifier l'item
@@ -67,7 +70,18 @@ div
 <script>
 import { mapGetters, mapActions } from 'vuex'
 
+import Title from '@/components/Misc/Title'
+
 export default {
+  components: {
+    'title-app': Title
+  },
+  props: {
+    user: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       dialog: false,
@@ -94,7 +108,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'auth/user',
       findSubjects: 'subjects/find',
       findYears: 'years/find',
       findDepartments: 'departments/find'
