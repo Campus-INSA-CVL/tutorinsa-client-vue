@@ -164,20 +164,20 @@ export default {
           this.$moment(this.editedItem.date).isValid() || 'Date non valide',
         patternTime: (v) => /\d{2}:(00|30)/g.test(v) || 'Temps invalide'
       },
-      dialog: true,
+      dialog: false,
       valid: true,
       durationMenu: false,
       dateMenu: false,
       startMenu: false,
       editedItem: {
-        campus: 'bourges',
-        date: '2020-04-27',
-        subjectId: '5e455e03d04d8937b8396214',
+        campus: null,
+        date: null,
+        subjectId: '',
         comment: '',
         duration: '',
         time: '',
         type: 'tuteur',
-        roomId: '5e9c74aad9f9d0547cddd91f'
+        roomId: null
       },
       resetItem: {
         campus: null,
@@ -503,8 +503,6 @@ export default {
       if (calendars.data.length === 0) {
         return true
       }
-      console.log('calendars:', calendars)
-
       if (calendars.data[0].slots) {
         const date = calendars.data[0].date
         let viewTimes = 0
