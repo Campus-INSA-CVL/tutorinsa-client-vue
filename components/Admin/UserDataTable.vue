@@ -1,11 +1,30 @@
 <template lang="pug">
-  FeathersVuexFind(service="users", :query="{}")
+  FeathersVuexFind(service="users", :query="{$limit: itemsPerPage, $skip: itemsPerPage * (page - 1)}", watch="query")
     section(slot-scope="{ items: users }")
       v-data-iterator(:items="users", :items-per-page.sync="itemsPerPage", :sort-by="sortBy.toLowerCase()", :sort-desc="sortDesc", :page="page", hide-default-footer, :search="search")
         template(v-slot:header)
           v-toolbar
             v-toolbar-title utilisateurs
-            v-text-field(v-model="search", clearable, single-line, hide-details, :prepend-icon="svg.mdiMagnify", label="recherche par courriel")
+            //v-text-field(v-model="search", clearable, single-line, hide-details, :prepend-icon="svg.mdiMagnify", label="recherche par courriel")
+
+        template(v-slot:footer)
+          v-row(align="center", justify="center").mt-2
+            span.grey--text #[span.text-capitalize éléments] par page
+            v-menu(offset-y)
+              template(v-slot:activator="{on}")
+                v-btn(text, v-on="on").ml-2.primary--text
+                  span {{itemsPerPage}}
+                  v-icon {{svg.mdiChevronDown}}
+              v-list
+                v-list-item(v-for="(number, index) in itemsPerPageArray", :key="index", @click="updateItemsPerPage(number)")
+                  v-list-item-title {{number}}
+            v-spacer
+            span.mr-4.grey--text page {{page}} sur {{numberOfPages}}
+            v-btn(fab, small, @click="formerPage", :disabled="page === 1").mr-1.primary
+              v-icon {{svg.mdiChevronLeft}}
+            v-btn(fab, small, @click="nextPage", :disabled="page === numberOfPages").ml-1.primary
+              v-icon {{svg.mdiChevronRight}}
+
         template(v-slot:default="props")
           v-row
             v-col(v-for="(item, indice) in props.items", :key="item.email", cols="12", sm="6", md="4", lg="3")
@@ -62,9 +81,16 @@
 
 <script>
 import { FeathersVuexFind } from 'feathers-vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
-import { mdiPencil, mdiDelete, mdiMagnify } from '@mdi/js'
+import {
+  mdiPencil,
+  mdiDelete,
+  mdiMagnify,
+  mdiChevronDown,
+  mdiChevronLeft,
+  mdiChevronRight
+} from '@mdi/js'
 
 export default {
   components: {
@@ -78,10 +104,14 @@ export default {
       page: 1,
       itemsPerPage: 4,
       itemsPerPageArray: [4, 8, 12],
+      numberofItems: null,
       svg: {
         mdiPencil,
         mdiDelete,
-        mdiMagnify
+        mdiMagnify,
+        mdiChevronDown,
+        mdiChevronLeft,
+        mdiChevronRight
       },
       dialog: false,
       editedId: -1,
@@ -109,15 +139,39 @@ export default {
     ...mapGetters({
       findSubjects: 'subjects/find',
       findYears: 'years/find',
-      findDepartments: 'departments/find'
-    })
+      findDepartments: 'departments/find',
+      findUsers: 'users/find'
+    }),
+    numberOfPages() {
+      return Math.ceil(this.numberofItems / this.itemsPerPage)
+    }
   },
   watch: {
     dialog(val) {
       val || this.close()
     }
   },
+  async mounted() {
+    try {
+      const response = await this.Users({ query: { $limit: 0 } })
+      this.numberofItems = response.total
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  },
   methods: {
+    ...mapActions({
+      Users: 'users/find'
+    }),
+    nextPage() {
+      if (this.page + 1 <= this.numberOfPages) this.page += 1
+    },
+    formerPage() {
+      if (this.page - 1 >= 1) this.page -= 1
+    },
+    updateItemsPerPage(number) {
+      this.itemsPerPage = number
+    },
     editItem(item) {
       this.editedItem = Object.assign({}, item)
       this.editedItem.yearId = item.year._id
