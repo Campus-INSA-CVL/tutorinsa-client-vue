@@ -23,7 +23,7 @@ import { mapGetters } from 'vuex'
 import { FeathersVuexFind } from 'feathers-vuex'
 import Title from '@/components/Misc/Title'
 import Tutorinsa from '@/components/Misc/TutorInsa'
-import Signup from '@/components/Signup'
+import Signup from '@/components/Auth/Signup'
 import PreviewPost from '@/components/Post/PreviewPost'
 import Welcome from '@/components/Misc/Welcome'
 

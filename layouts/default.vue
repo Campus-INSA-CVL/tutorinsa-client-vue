@@ -87,7 +87,7 @@ import {
 
 import { EventBus } from '@/utils/event-bus'
 
-import Logout from '@/components/logout'
+import Logout from '@/components/Auth/Logout'
 import Snack from '@/components/Misc/GlobalSnack'
 import FormPost from '@/components/Post/FormPost'
 
