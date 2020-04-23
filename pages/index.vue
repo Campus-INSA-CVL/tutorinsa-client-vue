@@ -28,6 +28,7 @@ import PreviewPost from '@/components/Post/PreviewPost'
 import Welcome from '@/components/Misc/Welcome'
 
 export default {
+  name: 'Index',
   components: {
     FeathersVuexFind,
     'title-app': Title,

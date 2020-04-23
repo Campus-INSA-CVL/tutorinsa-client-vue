@@ -109,6 +109,7 @@ import { EventBus } from '@/utils/event-bus'
 import PreviewPost from '@/components/Post/PreviewPost'
 
 export default {
+  name: 'FormPost',
   components: {
     'preview-post-app': PreviewPost
   },

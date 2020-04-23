@@ -15,6 +15,7 @@ import User from '@/components/User/User'
 import PreviewPost from '@/components/Post/PreviewPost'
 
 export default {
+  name: 'Profile',
   components: {
     'user-app': User,
     'preview-post-app': PreviewPost

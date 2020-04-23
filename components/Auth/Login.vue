@@ -29,6 +29,7 @@ import { decode as decodeJWT } from 'jsonwebtoken'
 import { mdiLoginVariant, mdiEmail, mdiLock, mdiEye, mdiEyeOff } from '@mdi/js'
 
 export default {
+  name: 'Login',
   data() {
     return {
       email: '',

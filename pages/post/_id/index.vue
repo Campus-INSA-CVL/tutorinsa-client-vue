@@ -19,6 +19,7 @@ import Post from '@/components/Post/Post'
 import AboutCreator from '@/components/Post/AboutCreator'
 
 export default {
+  name: 'PostId',
   components: {
     'post-app': Post,
     'about-creator-app': AboutCreator

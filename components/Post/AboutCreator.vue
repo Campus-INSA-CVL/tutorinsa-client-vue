@@ -22,6 +22,7 @@
 import { mdiAccount, mdiStar, mdiCardText, mdiEmail } from '@mdi/js'
 
 export default {
+  name: 'AboutCreator',
   props: {
     creator: {
       type: Object,

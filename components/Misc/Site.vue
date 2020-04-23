@@ -12,6 +12,7 @@
 import Text from '@/components/Misc/Text'
 
 export default {
+  name: 'Site',
   components: {
     'text-app': Text
   }

@@ -52,6 +52,7 @@ import EditUser from '@/components/User/EditUser'
 import Title from '@/components/Misc/Title'
 
 export default {
+  name: 'User',
   components: {
     'title-app': Title,
     'edit-user-app': EditUser

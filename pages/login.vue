@@ -8,6 +8,7 @@
 import Login from '@/components/Auth/Login'
 
 export default {
+  name: 'Login',
   components: {
     'login-app': Login
   },

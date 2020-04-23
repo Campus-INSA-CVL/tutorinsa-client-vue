@@ -28,6 +28,7 @@
 import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
 
 export default {
+  name: 'PreviewPost',
   props: {
     post: {
       type: Object,

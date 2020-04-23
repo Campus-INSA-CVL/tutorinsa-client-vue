@@ -20,6 +20,7 @@
 import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
 
 export default {
+  name: 'Post',
   props: {
     post: {
       type: Object,

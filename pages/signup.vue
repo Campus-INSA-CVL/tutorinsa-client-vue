@@ -8,6 +8,7 @@
 import Signup from '@/components/Auth/Signup'
 
 export default {
+  name: 'Signup',
   components: {
     'signup-app': Signup
   },

@@ -23,6 +23,7 @@ import Welcome from '@/components/Misc/Welcome'
 import Site from '@/components/Misc/Site'
 
 export default {
+  name: 'About',
   components: {
     'tutorinsa-app': TutorInsa,
     'title-app': Title,

@@ -13,6 +13,7 @@ import { mdiClose } from '@mdi/js'
 import { EventBus } from '@/utils/event-bus'
 
 export default {
+  name: 'GlobalSnack',
   props: {
     color: {
       type: String,

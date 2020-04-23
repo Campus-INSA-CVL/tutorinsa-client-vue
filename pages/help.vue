@@ -9,6 +9,7 @@ import TutorInsa from '@/components/Misc/TutorInsa'
 import Title from '@/components/Misc/Title'
 
 export default {
+  name: 'Help',
   components: {
     'tutorinsa-app': TutorInsa,
     'title-app': Title

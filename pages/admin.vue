@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: 'Admin',
   middleware: 'admin',
   data() {
     return {

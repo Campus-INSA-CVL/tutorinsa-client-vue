@@ -15,6 +15,7 @@
 import TextApp from '@/components/Misc/Text'
 
 export default {
+  name: 'Welcome',
   components: {
     'text-app': TextApp
   }
