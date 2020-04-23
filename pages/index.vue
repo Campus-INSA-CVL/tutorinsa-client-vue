@@ -15,17 +15,17 @@
           section(slot-scope="{ items: posts , isFindPending }")
             v-row(justify="space-around")
               v-col(cols="12", sm="6", lg="4",v-for="(post, index) in posts", :key="index", align-self="center")
-                preview-post-app(:post="post", shareBtn)
+                preview-post-app(:post="post", shareBtn, hoverProp)
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { FeathersVuexFind } from 'feathers-vuex'
 import Title from '@/components/Misc/Title'
-import Tutorinsa from '@/components/TutorInsa'
+import Tutorinsa from '@/components/Misc/TutorInsa'
 import Signup from '@/components/Signup'
 import PreviewPost from '@/components/Post/PreviewPost'
-import Welcome from '@/components/Welcome'
+import Welcome from '@/components/Misc/Welcome'
 
 export default {
   components: {

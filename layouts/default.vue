@@ -4,15 +4,18 @@
 
       v-list(nav, flat)
         v-list-item-group(color="primary")
-
           v-list-item(v-for="(item, indice) in nav", :key="indice", nuxt, :to="item.link")
             v-list-item-icon
               v-icon(left) {{svg[item.icon]}}
             v-list-item-title.text-uppercase {{item.title}}
-          v-list-item(key="admin", nuxt, to="/admin", v-if="isAdmin")
-            v-list-item-icon
-              v-icon(left) {{svg.mdiLock}}
-            v-list-item-title.text-uppercase admin
+          v-list-group(v-if="isAdmin", :prepend-icon="svg.mdiLock", no-actions)
+            template(v-slot:activator)
+              v-list-item-title.text-uppercase admin
+            v-list-item(v-for="(item, indice) in navAdmin", :key="indice", nuxt, :to="item.link", exact)
+              v-list-item-icon
+                v-icon() {{svg[item.icon]}}
+              v-list-item-title.text-uppercase {{item.title}}
+
       v-container
         v-row(justify="center")
           v-col(cols="12")
@@ -72,7 +75,14 @@ import {
   mdiHome,
   mdiInformation,
   mdiHelpCircle,
-  mdiAccount
+  mdiAccount,
+  mdiAccountGroup,
+  mdiTextBoxMultipleOutline,
+  mdiCalendar,
+  mdiMapMarker,
+  mdiAtomVariant,
+  mdiTimerSand,
+  mdiBookMultiple
 } from '@mdi/js'
 
 import { EventBus } from '@/utils/event-bus'
@@ -97,7 +107,14 @@ export default {
         mdiHome,
         mdiInformation,
         mdiHelpCircle,
-        mdiAccount
+        mdiAccount,
+        mdiAccountGroup,
+        mdiTextBoxMultipleOutline,
+        mdiCalendar,
+        mdiMapMarker,
+        mdiAtomVariant,
+        mdiTimerSand,
+        mdiBookMultiple
       },
       nav: [
         {
@@ -114,6 +131,32 @@ export default {
           title: 'à propos',
           link: '/about',
           icon: 'mdiInformation'
+        }
+      ],
+      navAdmin: [
+        {
+          title: 'général',
+          link: '/admin',
+          icon: 'mdiHome'
+        },
+        { title: 'users', link: '/admin/users', icon: 'mdiAccountGroup' },
+        {
+          title: 'posts',
+          link: '/admin/posts',
+          icon: 'mdiTextBoxMultipleOutline'
+        },
+        { title: 'matières', link: '/admin/subjects', icon: 'mdiBookMultiple' },
+        { title: 'années', link: '/admin/years', icon: 'mdiTimerSand' },
+        {
+          title: 'départements',
+          link: '/admin/departments',
+          icon: 'mdiAtomVariant'
+        },
+        { title: 'salles', link: '/admin/rooms', icon: 'mdiMapMarker' },
+        {
+          title: 'calendrier',
+          link: '/admin/calendar',
+          icon: 'mdiCalendar'
         }
       ]
     }

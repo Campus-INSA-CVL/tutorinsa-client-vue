@@ -6,7 +6,7 @@
       v-data-table(:items="items", :headers="headers", :fetch-query="fetchQuery", calculate-widths)
 
         template(v-slot:top)
-          v-toolbar
+          v-toolbar(flat)
             v-toolbar-title.text-capitalize.mr-4 {{ title }}
             v-divider(inset, vertical)
             v-spacer
@@ -17,11 +17,11 @@
               v-card
                 v-card-title {{formTitle}}
                 v-card-text
-                  v-text-field(v-model="editedItem.name", label="name")
+                  v-text-field(v-model="editedItem.name", label="Name", :rules="rules.required")
                 v-card-actions
                   v-spacer
-                  v-btn(@click="close") annuler
-                  v-btn(@click="save") enregistrer
+                  v-btn(@click="close", text, depressed) annuler
+                  v-btn(@click="save", depressed).primary {{saveBtn}}
 
 
         template(v-slot:item.actions="{item}")
@@ -73,6 +73,9 @@ export default {
         mdiPencil,
         mdiPlus
       },
+      rules: {
+        required: (v) => !!v || 'Requis'
+      },
       dialog: false,
       editedId: -1,
       editedItem: {
@@ -95,7 +98,10 @@ export default {
       })
     },
     formTitle() {
-      return this.editedId === -1 ? `Nouveau item` : "Modifier l'item"
+      return this.editedId === -1 ? 'Nouveau item' : "Modifier l'item"
+    },
+    saveBtn() {
+      return this.editedId === -1 ? 'créer' : 'enregistrer'
     }
   },
   watch: {

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Text from '@/components/Text'
+import Text from '@/components/Misc/Text'
 
 export default {
   components: {

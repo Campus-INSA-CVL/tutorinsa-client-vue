@@ -1,12 +1,12 @@
 <template lang="pug">
   v-hover(v-slot:default="{ hover }")
-    v-card(:class="isEleve(post.type) ? 'student': 'tutor'", :elevation="hover ? 12 : 4" )
+    v-card(:class="!outlined && isEleve(post.type) ? 'student': (outlined ? '' : 'tutor')", :elevation="hoverProp && hover ? 12 : (hoverProp ? 4 : 0)", :outlined="outlined")
 
       v-card-title
         span.text-uppercase.font-weight-bold {{post.subject.name}}
         span.subtitle-2 &nbsp;({{$moment(post.date).fromNow()}})
 
-      v-card-subtitle
+      v-card-subtitle.text-left
         v-icon(small, left) {{svg.mdiCalendar}}
         span.text-capitalize &nbsp;{{$moment(post.date).local().format('dddd LL')}}
         br
@@ -14,7 +14,7 @@
         span {{$moment(post.date).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;({{$moment(post.duration).utc().format('HH[:]mm')}})
         br
         v-icon(small, left, v-if="post.creator") {{svg.mdiSchool}}
-        span(v-if="post.creator")  {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
+        span(v-if="post.creator")  {{post.creator.lastName}} #[span.text-capitalize {{post.creator.firstName}}]
 
       v-card-text.text-justify.body-1.text-truncate {{post.comment}}
 
@@ -34,6 +34,14 @@ export default {
       default() {
         return {}
       }
+    },
+    hoverProp: {
+      type: Boolean,
+      default: false
+    },
+    outlined: {
+      type: Boolean,
+      default: false
     },
     shareBtn: {
       type: Boolean,

@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import TutorInsa from '@/components/TutorInsa'
+import TutorInsa from '@/components/Misc/TutorInsa'
 import Title from '@/components/Misc/Title'
-import Welcome from '@/components/Welcome'
-import Site from '@/components/Site'
+import Welcome from '@/components/Misc/Welcome'
+import Site from '@/components/Misc/Site'
 
 export default {
   components: {

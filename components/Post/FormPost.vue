@@ -89,7 +89,7 @@
             v-card-text
               v-row
                 v-col(cols="12", sm="6", lg="4",v-for="(post, index) in futurePosts", :key="index", align-self="center")
-                  preview-post-app(:post="post", shareBtn)
+                  preview-post-app(:post="post", shareBtn, hoverProp)
 </template>
 
 <script>

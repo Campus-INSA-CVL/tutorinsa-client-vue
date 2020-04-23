@@ -5,7 +5,7 @@
     v-col(cols="12", sm="4", md="6", lg="8").pt-0
       v-row()
         v-col(v-for="(post, index) in user.createdPosts",:key="index", cols="12", md="6")
-          preview-post-app(:post="post")
+          preview-post-app(:post="post", hoverProp, shareBtn)
 </template>
 
 <script>

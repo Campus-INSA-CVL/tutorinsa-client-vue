@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import TextApp from '@/components/Text'
+import TextApp from '@/components/Misc/Text'
 
 export default {
   components: {
