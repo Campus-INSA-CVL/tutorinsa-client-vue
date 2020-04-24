@@ -1,13 +1,24 @@
 <template lang="pug">
   section
-    v-row
-      v-col(align="center")
+    v-row(justify="space-around")
+      v-col(cols="12", align="center")
         div(v-if="error.statusCode === 404", :data-text="pageNotFound").glitch {{pageNotFound}}
-        h1(v-else) {{otherError}}
-    nuxt-link(to="/") Home page
+        div(v-if="error.statusCode === 500", :data-text="internalServerError").glitch {{internalServerError}}
+        div(v-else, :data-text="`${error.statusCode}, ${otherError}`").glitch {{error.statusCode}},&nbsp;{{otherError}}
+
+      v-col(cols="6", align="center")
+        v-btn(@click="more")
+          v-icon(left) {{svg.mdiLightbulbOn}}
+          span en savoir plus
+      v-col(cols="6", align="center")
+        v-btn(:href="`mailto:${email}?subject=TutorINSA: Error ${this.error.statusCode}&body=Name: ${this.error.name}%0D%0ACode: ${this.error.statusCode}%0D%0AMessage: ${this.error.message}%0D%0A`")
+          v-icon(left) {{svg.mdiEmail}}
+          span envoyer un rapport d'erreur
 </template>
 
 <script>
+import { mdiLightbulbOn, mdiEmail } from '@mdi/js'
+
 export default {
   layout: 'empty',
   props: {
@@ -18,13 +29,42 @@ export default {
   },
   data() {
     return {
+      svg: {
+        mdiLightbulbOn,
+        mdiEmail
+      },
       pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
+      internalServerError: '500 Internal Server Error',
+      otherError: "c'est une erreur !"
+    }
+  },
+  computed: {
+    message() {
+      console.dir(this.error)
+      return `Name: ${this.error.name}\nCode: ${this.error.statusCode}\nMessage: ${this.error.message}`
+    },
+    email() {
+      return process.env.EMAIL
+    }
+  },
+  methods: {
+    more() {
+      alert(this.message)
     }
   },
   head() {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+    let title = ''
+    switch (this.error.statusCode) {
+      case 404:
+        title = this.pageNotFound
+        break
+      case 500:
+        title = this.internalServerError
+        break
+      default:
+        title = `${this.error.statusCode}, ${this.otherError}`
+        break
+    }
     return {
       title
     }

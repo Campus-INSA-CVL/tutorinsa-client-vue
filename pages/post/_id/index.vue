@@ -1,19 +1,15 @@
 <template lang="pug">
   v-row
     v-col(cols="12", md="7")
-      component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
-        v-skeleton-loader(type="article, list-item-three-line, actions", v-if="loading")
-        post-app(:post="post", v-else)
+      post-app(:post="post")
     v-col(cols="6", md="5", v-if="post && post.creator")
-      component(:is="transition !== 'None' ? `v-${transition}` : 'div'", hide-on-leave)
-        v-skeleton-loader(type="article", v-if="loading")
-        about-creator-app(:creator="post.creator", v-else)
+      about-creator-app(:creator="post.creator")
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 
-import { EventBus } from '@/utils/event-bus'
+// import { EventBus } from '@/utils/event-bus'
 
 import Post from '@/components/Post/Post'
 import AboutCreator from '@/components/Post/AboutCreator'
@@ -24,27 +20,49 @@ export default {
     'post-app': Post,
     'about-creator-app': AboutCreator
   },
-  async fetch() {
-    try {
-      let response = await this.getPost(this.$route.params.id)
-      if (response === null) {
-        response = await this.fetchPost(this.$route.params.id)
-      }
-      this.post = response
-    } catch (error) {
-      EventBus.$emit('snackEvent', {
-        color: 'error',
-        message: 'Une erreur est survenue lors du chargement des postes',
-        active: true,
-        close: true
-      })
+  // async fetch() {
+  //   try {
+  //     let response = await this.getPost(this.$route.params.id)
+  //     if (response === null) {
+  //       response = await this.fetchPost(this.$route.params.id)
+  //     }
+  //     this.post = response
+  //   } catch (error) {
+  //     EventBus.$emit('snackEvent', {
+  //       color: 'error',
+  //       message: 'Une erreur est survenue lors du chargement des postes',
+  //       active: true,
+  //       close: true
+  //     })
+  //   }
+  // },
+  asyncData(context) {
+    console.debug('context:', context)
+    const { store, params, error } = context
+    const post = store.getters['posts/get'](params.id)
+    if (!post) {
+      return store
+        .dispatch('posts/get', params.id)
+        .then((res) => {
+          console.debug('res:', res)
+          return { post: res }
+        })
+        .catch((e) => {
+          error({
+            statusCode: e.code,
+            message: e.message,
+            name: e.name,
+            errors: e.errors
+          })
+        })
+    } else {
+      return { post }
     }
   },
-  fetchOnServer: false,
+  // fetchOnServer: false,
   data() {
     return {
-      transition: 'fade-transition',
-      post: null
+      transition: 'fade-transition'
     }
   },
   computed: {
@@ -55,7 +73,7 @@ export default {
       return this.post ? this.post.subject.name.toUpperCase() : 'Chargement...'
     },
     loading() {
-      return this.post === null
+      return !this.post
     }
   },
   methods: {
