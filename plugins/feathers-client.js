@@ -31,6 +31,7 @@ const {
   models,
   FeathersVuex
 } = feathersVuex(feathersClient, {
+  serverAlias: 'api',
   idField: '_id', // Must match the id field in your database table/collection
   whitelist: ['$regex', '$options'],
   enableEvents: process.client // No events for SSR server

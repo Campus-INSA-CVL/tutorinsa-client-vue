@@ -7,76 +7,84 @@
     v-card
       v-row(no-gutters)
         v-col
-          v-card(flat, tile)
-            v-form(@submit.prevent, ref="FormPost", v-model="valid")
+          transition(name="fade", mode="out-in")
+            v-card(flat, tile, v-if="$fetchState.pending")
               v-card-title.font-weight-bold
-                v-row(no-gutters, justify="center")
-                  v-col(cols="12", sm="10", md="8", lg="6", align="center")
-                    v-row(no-gutters, justify="space-around")
-                      v-col(cols="10", align="start")
-                        div #[span.text-capitalize nouvelle]&nbsp;#[span(:class="colorPost + '--text'").text-uppercase {{editedItem.type === 'eleve' ? 'demande' : 'offre'}}]&nbsp;de tutorat
-                      v-col(cols="2", align="end")
-                        v-btn(@click="close()", depressed, icon)
-                          v-icon(:color="colorPost") {{svg.mdiClose}}
-              v-card-text.pb-0
-                v-row(justify="center", dense)
-                  v-col(cols="12", sm="10", md="8", lg="6", align="center")
-                    header.text-left #[span.text-capitalize type] de l'annonce
-                    v-radio-group(v-model="editedItem.type", row, :rules="[rules.required]")
-                      v-row(justify="center")
-                        v-radio(label="Tuteur", value="tuteur", :color="colorPost").font-weight-bold
-                        v-radio(label="Élève", value="eleve", :color="colorPost").font-weight-bold
+                v-row
+                  v-col(cols="12", align="center")
+                    div #[span.text-capitalize chargment] des données...
+                  v-col(cols="12", align="center")
+                    v-progress-circular(:size="50", indeterminate).primary--text
+            v-card(flat, tile, v-else)
+              v-form(@submit.prevent, ref="FormPost", v-model="valid")
+                v-card-title.font-weight-bold
+                  v-row(no-gutters, justify="center")
+                    v-col(cols="12", sm="10", md="8", lg="6", align="center")
+                      v-row(no-gutters, justify="space-around")
+                        v-col(cols="10", align="start")
+                          div #[span.text-capitalize nouvelle]&nbsp;#[span(:class="colorPost + '--text'").text-uppercase {{editedItem.type === 'eleve' ? 'demande' : 'offre'}}]&nbsp;de tutorat
+                        v-col(cols="2", align="end")
+                          v-btn(@click="close()", depressed, icon)
+                            v-icon(:color="colorPost") {{svg.mdiClose}}
+                v-card-text().pb-0
+                  v-row(justify="center", dense)
+                    v-col(cols="12", sm="10", md="8", lg="6", align="center")
+                      header.text-left #[span.text-capitalize type] de l'annonce
+                      v-radio-group(v-model="editedItem.type", row, :rules="[rules.required]")
+                        v-row(justify="center")
+                          v-radio(label="Tuteur", value="tuteur", :color="colorPost").font-weight-bold
+                          v-radio(label="Élève", value="eleve", :color="colorPost").font-weight-bold
 
-                    header.text-left #[span.text-capitalize campus] de l'annonce
-                    v-radio-group(v-model="editedItem.campus", row, :rules="[rules.required, rules.campus]")
-                      v-row(justify="center")
-                        v-radio(label="BOURGES", value="bourges", :color="colorPost").font-weight-bold
-                        v-radio(label="BLOIS", value="blois", :color="colorPost").font-weight-bold
+                      header.text-left #[span.text-capitalize campus] de l'annonce
+                      v-radio-group(v-model="editedItem.campus", row, :rules="[rules.required, rules.campus]")
+                        v-row(justify="center")
+                          v-radio(label="BOURGES", value="bourges", :color="colorPost").font-weight-bold
+                          v-radio(label="BLOIS", value="blois", :color="colorPost").font-weight-bold
 
-                    v-row(dense, justify="center")
-                      v-col(cols="12", align="center")
-                        v-select(label="Matière", clearable, :items="findSubjects({query: {$sort: {name: 1}}}).data", outlined, item-text="name", item-value="_id", :color="colorPost", :item-color="colorPost", :menu-props="{bottom: true, offsetY: true}", v-model="editedItem.subjectId", :rules="[rules.required]")
+                      v-row(dense, justify="center")
+                        v-col(cols="12", align="center")
+                          v-select(label="Matière", clearable, :items="findSubjects({query: {$sort: {name: 1}}}).data", outlined, item-text="name", item-value="_id", :color="colorPost", :item-color="colorPost", :menu-props="{bottom: true, offsetY: true}", v-model="editedItem.subjectId", :rules="[rules.required]")
 
-                      v-col(cols="12", align="center")
-                        v-textarea(outlined, label="Commentaire", clearable, auto-grow, counter=220, :placeholder="editedItem.type === 'tuteur' ? 'Décrivez ici ce que vous allez faire durant votre séance !' : 'Décrivez ici ce que vous aimeriez apprendre !' ", :color="colorPost", rows=3, v-model="editedItem.comment", :rules="[rules.required, rules.commentLength]")
+                        v-col(cols="12", align="center")
+                          v-textarea(outlined, label="Commentaire", clearable, auto-grow, counter=220, :placeholder="editedItem.type === 'tuteur' ? 'Décrivez ici ce que vous allez faire durant votre séance !' : 'Décrivez ici ce que vous aimeriez apprendre !' ", :color="colorPost", rows=3, v-model="editedItem.comment", :rules="[rules.required, rules.commentLength]")
 
-                      v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
-                        v-menu(ref="dateMenu", :close-on-content-click="false", v-model="dateMenu", transition="slide-y-transition", :return-value.sync="editedItem.date",  min-width="290px", offset-y, bottom, origin="bottom center", :nudge-bottom="-20")
-                          template(v-slot:activator="{on}")
-                            v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiCalendar", :color="colorPost", outlined, @click:clear="editedItem.date = null", :value="formattedDate", clearable, label="Choisissez une date", :rules="[rules.required, rules.isDate]", :disabled="!editedItem.subjectId")
-                          v-date-picker(v-if="dateMenu", v-model="editedItem.date", no-title, :color="colorPost", :allowed-dates="allowedDates", :first-day-of-week="1")
-                            v-spacer
-                            v-btn(text @click="dateMenu = false", color="") Cancel
-                            v-btn(text, @click="$refs.dateMenu.save(editedItem.date)", :color="colorPost") OK
-
-
-                      v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
-                        v-select(label="Choisissez une salle", clearable, :items="filteredRooms", outlined, item-text="name", item-value="_id", :prepend-inner-icon="svg.mdiMapMarker", :color="colorPost", :disabled="!editedItem.date || !editedItem.campus", no-data-text="Aucune salle de disponible", v-model="editedItem.roomId", :menu-props="{bottom: true, offsetY: true}", validate-on-blur, :rules="[rules.required]")
-                          template(v-slot:selection="{ item }").
-                            #[span.text-uppercase {{item.name}}]&nbsp;#[span.text-capitalize ({{item.campus}})]
-                          template(v-slot:item="{ item, on, attrs}")
-                            v-list-item(v-on="on", :aria-selected="attrs['aria-selected']", :role="attrs['role']", :inputValue="attrs['inputValue']", :id="attrs['id']", :color="colorPost", :key="attrs['id']").text-uppercase {{item.name}}
-
-
-                      v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
-                        v-menu(ref="startMenu", :close-on-content-click="false", v-model="startMenu", offset-y,  transition="slide-y-reverse-transition", :return-value.sync="editedItem.time", top, :nudge-top="10", origin="bottom center")
-                          template(v-slot:activator="{on}")
-                            v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiClockOutline", v-model="editedItem.time", outlined, :disabled="!editedItem.roomId", label="Début du tutorat", :color="colorPost", :rules="[rules.required, rules.patternTime]")
-                          v-time-picker(v-if="startMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.time",  @click:minute="$refs.startMenu.save(editedItem.time)", :color="colorPost", :min="minStartTimePicker", :max="maxStartTimePicker", :allowed-minutes="allowedMinutes", :allowed-hours="allowedHours")
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-menu(ref="dateMenu", :close-on-content-click="false", v-model="dateMenu", transition="slide-y-transition", :return-value.sync="editedItem.date",  min-width="290px", offset-y, bottom, origin="bottom center", :nudge-bottom="-20")
+                            template(v-slot:activator="{on}")
+                              v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiCalendar", :color="colorPost", outlined, @click:clear="editedItem.date = null", :value="formattedDate", clearable, label="Choisissez une date", :rules="[rules.required, rules.isDate]", :disabled="!editedItem.subjectId")
+                            v-date-picker(v-if="dateMenu", v-model="editedItem.date", no-title, :color="colorPost", :allowed-dates="allowedDates", :first-day-of-week="1")
+                              v-spacer
+                              v-btn(text @click="dateMenu = false", color="") Cancel
+                              v-btn(text, @click="$refs.dateMenu.save(editedItem.date)", :color="colorPost") OK
 
 
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-select(label="Choisissez une salle", clearable, :items="filteredRooms", outlined, item-text="name", item-value="_id", :prepend-inner-icon="svg.mdiMapMarker", :color="colorPost", :disabled="!editedItem.date || !editedItem.campus", no-data-text="Aucune salle de disponible", v-model="editedItem.roomId", :menu-props="{bottom: true, offsetY: true}", validate-on-blur, :rules="[rules.required]")
+                            template(v-slot:selection="{ item }").
+                              #[span.text-uppercase {{item.name}}]&nbsp;#[span.text-capitalize ({{item.campus}})]
+                            template(v-slot:item="{ item, on, attrs}")
+                              v-list-item(v-on="on", :aria-selected="attrs['aria-selected']", :role="attrs['role']", :inputValue="attrs['inputValue']", :id="attrs['id']", :color="colorPost", :key="attrs['id']").text-uppercase {{item.name}}
 
-                      v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
-                        v-menu(ref="durationMenu", :close-on-content-click="false", v-model="durationMenu", offset-y,  transition="slide-y-reverse-transition", :return-value.sync="editedItem.duration", top, :nudge-top="10", origin="bottom center")
-                          template(v-slot:activator="{on}")
-                            v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiClockStart ", v-model="editedItem.duration", outlined, label="Durée du tutorat", :disabled="!editedItem.time", :color="colorPost", :rules="[rules.required, rules.patternTime]")
-                          v-time-picker(v-if="durationMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.duration",  @click:minute="$refs.durationMenu.save(editedItem.duration)", :color="colorPost", :max="maxDurationTime", :allowed-minutes="[0, 30]")
 
-              v-card-actions
-                v-row(dense, justify="center")
-                  v-col(cols="12", sm="10", md="8", lg="6", align="end")
-                    v-btn(text, @click="cancel").mr-4 annuler
-                    v-btn(:color="colorPost", depressed, @click="save") créer
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-menu(ref="startMenu", :close-on-content-click="false", v-model="startMenu", offset-y,  transition="slide-y-reverse-transition", :return-value.sync="editedItem.time", top, :nudge-top="10", origin="bottom center")
+                            template(v-slot:activator="{on}")
+                              v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiClockOutline", v-model="editedItem.time", outlined, :disabled="!editedItem.roomId", label="Début du tutorat", :color="colorPost", :rules="[rules.required, rules.patternTime]")
+                            v-time-picker(v-if="startMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.time",  @click:minute="$refs.startMenu.save(editedItem.time)", :color="colorPost", :min="minStartTimePicker", :max="maxStartTimePicker", :allowed-minutes="allowedMinutes", :allowed-hours="allowedHours")
+
+
+
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-menu(ref="durationMenu", :close-on-content-click="false", v-model="durationMenu", offset-y,  transition="slide-y-reverse-transition", :return-value.sync="editedItem.duration", top, :nudge-top="10", origin="bottom center")
+                            template(v-slot:activator="{on}")
+                              v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiClockStart ", v-model="editedItem.duration", outlined, label="Durée du tutorat", :disabled="!editedItem.time", :color="colorPost", :rules="[rules.required, rules.patternTime]")
+                            v-time-picker(v-if="durationMenu", allowed-seconds=false, format="24hr", full-width, v-model="editedItem.duration",  @click:minute="$refs.durationMenu.save(editedItem.duration)", :color="colorPost", :max="maxDurationTime", :allowed-minutes="[0, 30]")
+
+                v-card-actions
+                  v-row(dense, justify="center")
+                    v-col(cols="12", sm="10", md="8", lg="6", align="end")
+                      v-btn(text, @click="cancel").mr-4 annuler
+                      v-btn(:color="colorPost", depressed, @click="save") créer
 
           v-card(flat, tile, v-if="$vuetify.breakpoint.smAndUp && (futurePosts && futurePosts.length > 0)")
             v-card-title.font-weight-bold
