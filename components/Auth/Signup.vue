@@ -28,7 +28,7 @@
           v-col(align="start")
             v-btn(depressed, @click="stepper = 2", :small="$vuetify.breakpoint.xs", color="primary", :disabled="createAccount") continuer
 
-      v-stepper-step(:complete="stepper > 2" , step="2", editable) À propos de toi
+      v-stepper-step(:complete="stepper > 2" , step="2", :editable="!createAccount") À propos de toi
 
       v-stepper-content(step="2")
         v-card(elevation="0")
