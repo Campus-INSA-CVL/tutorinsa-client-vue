@@ -10,15 +10,15 @@
 
       v-row
         v-col(cols="12", md="6")
-          v-select(clearable, label="Année", v-model="editedItem.yearId",:items="findYears().data", item-text="name", item-value="_id", outlined)
+          v-select(clearable, label="Année", v-model="editedItem.yearId",:items="years", item-text="name", item-value="_id", outlined, :menu-props="{bottom: true, offsetY: true}")
         v-col(cols="12", md="6")
-          v-select(clearable, label="Département", v-model="editedItem.departmentId", :items="findDepartments().data", item-text="name", item-value="_id", outlined)
+          v-select(clearable, label="Département", v-model="editedItem.departmentId", :items="departments", item-text="name", item-value="_id", outlined, :menu-props="{bottom: true, offsetY: true}")
 
       v-row
         v-col(cols="12", md="6")
-          v-select(clearable, deletable-chips, chips, multiple, label="Matière(s) préférée(s)", v-model="editedItem.favoriteSubjectsIds",:items="findSubjects().data", item-text="name", item-value="_id", outlined)
+          v-select(clearable, deletable-chips, chips, multiple, label="Matière(s) préférée(s)", v-model="editedItem.favoriteSubjectsIds",:items="subjects", item-text="name", item-value="_id", outlined, :menu-props="{bottom: true, offsetY: true}")
         v-col(cols="12", md="6")
-          v-select(clearable, deletable-chips, chips, multiple, label="Matière(s) en difficutée(s)", v-model="editedItem.difficultSubjectsIds",:items="findSubjects().data", item-text="name", item-value="_id", outlined)
+          v-select(clearable, deletable-chips, chips, multiple, label="Matière(s) en difficutée(s)", v-model="editedItem.difficultSubjectsIds",:items="subjects", item-text="name", item-value="_id", outlined, :menu-props="{bottom: true, offsetY: true}")
 
       v-row(justify="space-around")
         v-col(cols="12")
@@ -37,6 +37,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 
+import { EventBus } from '@/utils/event-bus'
+
 export default {
   name: 'EditUser',
   props: {
@@ -45,8 +47,66 @@ export default {
       default: () => null
     }
   },
+  async fetch() {
+    try {
+      const response = this.findSubjects()
+      if (!response.data.length) {
+        this.subjects = await this.Subjects()
+      } else {
+        this.subjects = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des matières',
+        active: true,
+        close: true
+      })
+    }
+    try {
+      const response = this.findDepartments()
+      if (!response.data.length) {
+        this.departments = await this.Departments()
+      } else {
+        this.departments = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des départements',
+        active: true,
+        close: true
+      })
+    }
+    try {
+      const response = this.findYears()
+      if (!response.data.length) {
+        this.years = await this.Years()
+      } else {
+        this.years = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des années',
+        active: true,
+        close: true
+      })
+    }
+
+    this.editItem(this.item)
+  },
   data() {
     return {
+      subjects: null,
+      years: null,
+      departments: null,
       editedId: -1,
       editedItem: {
         firstName: '',
@@ -68,6 +128,7 @@ export default {
       }
     }
   },
+  fetchOnServer: false,
   computed: {
     ...mapGetters({
       findSubjects: 'subjects/find',
@@ -82,33 +143,6 @@ export default {
         this.editItem(item)
       }
     }
-  },
-  async mounted() {
-    try {
-      const response = await this.findYears({})
-      if (!response.data.length) {
-        await this.Years({})
-      }
-    } catch (error) {
-      throw new Error(error.message)
-    }
-    try {
-      const response = await this.findDepartments({})
-      if (!response.data.length) {
-        await this.Departments({})
-      }
-    } catch (error) {
-      throw new Error(error.message)
-    }
-    try {
-      const response = await this.findSubjects({})
-      if (!response.data.length) {
-        await this.Subjects({})
-      }
-    } catch (error) {
-      throw new Error(error.message)
-    }
-    this.editItem(this.item)
   },
   methods: {
     ...mapActions({
