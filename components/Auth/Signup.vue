@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-stepper(v-model="stepper", vertical)
+  v-stepper(v-model="stepper", vertical).elevation-4
     v-form(autocomplete="on", @submit.prevent="signup()", ref="form", v-model="valid")
       v-stepper-step(:complete="stepper > 1", step="1", editable)
         span.
@@ -26,7 +26,7 @@
 
         v-row(justify="space-between", align="center")
           v-col(align="start")
-            v-btn(depressed, @click="stepper = 2", :small="$vuetify.breakpoint.xs", color="primary") continuer
+            v-btn(depressed, @click="stepper = 2", :small="$vuetify.breakpoint.xs", color="primary", :disabled="createAccount") continuer
 
       v-stepper-step(:complete="stepper > 2" , step="2", editable) À propos de toi
 
@@ -35,28 +35,29 @@
           v-card-text
             v-row(justify="space-between")
               v-col(cols="12", md="6", align="center")
-                v-select(label="Année", clearable, item-text="name", item-value="_id", :items="findYears().data" outlined, v-model="editedItem.yearId", required)
+                v-select(label="Année", clearable, item-text="name", item-value="_id", :items="years" outlined, v-model="editedItem.yearId", required, :loading="$fetchState.pending", :disabled="$fetchState.pending", :menu-props="{bottom: true, offsetY: true}", :rules="[rules.required]")
+
               v-col(cols="12", md="6")
-                v-select(label="Département", clearable, item-text="name", item-value="_id", :items="findDepartments().data" outlined, v-model="editedItem.departmentId", required)
+                v-select(label="Département", clearable, item-text="name", item-value="_id", :items="departments" outlined, v-model="editedItem.departmentId", required, :loading="$fetchState.pending", :disabled="$fetchState.pending", :menu-props="{bottom: true, offsetY: true}", :rules="[rules.required]")
 
             v-row
               v-col(cols="12")
-                v-select(label="Matière(s) préférée(s)", clearable, item-text="name", item-value="_id", :items="findSubjects().data", deletable-chips, chips, multiple, outlined, v-model="editedItem.favoriteSubjectsIds")
+                v-select(label="Matière(s) préférée(s)", clearable, item-text="name", item-value="_id", :items="subjects", deletable-chips, chips, multiple, outlined, v-model="editedItem.favoriteSubjectsIds", :loading="$fetchState.pending", :disabled="$fetchState.pending", :menu-props="{bottom: true, offsetY: true}")
 
             v-row
               v-col(cols="12")
-                v-select(label="Matière(s) en difficultée(s)", clearable, item-text="name", item-value="_id", :items="findSubjects().data", deletable-chips, chips, multiple, outlined, v-model="editedItem.difficultSubjectsIds")
+                v-select(label="Matière(s) en difficultée(s)", clearable, item-text="name", item-value="_id", :items="findSubjects().data", deletable-chips, chips, multiple, outlined, v-model="editedItem.difficultSubjectsIds", :loading="$fetchState.pending", :disabled="$fetchState.pending", :menu-props="{bottom: true, offsetY: true}")
 
             v-row(justify="space-around")
-              v-col(cols="6")
-                v-checkbox(label="Élève", v-model="editedItem.permissions", value="eleve")
-              v-col(cols="6")
-                v-checkbox(label="Tuteur", v-model="editedItem.permissions", value="tuteur")
+              v-col(cols="12")
+                header.text-left #[span.text-capitalize votre] status
+              v-checkbox(label="Élève", v-model="editedItem.permissions", value="eleve")
+              v-checkbox(label="Tuteur", v-model="editedItem.permissions", value="tuteur")
 
 
         v-row
           v-col(align="start")
-            v-btn(depressed, @click="stepper = 3", :small="$vuetify.breakpoint.xs", color="primary") continuer
+            v-btn(depressed, @click="stepper = 3", :small="$vuetify.breakpoint.xs", color="primary", :disabled="aboutYou") continuer
           v-spacer
           v-col(align="end")
             v-btn(depressed, @click="stepper = 1", :small="$vuetify.breakpoint.xs") retour
@@ -88,19 +89,10 @@
               li.text-left {{perm}}
         v-row
           v-col(align="start")
-            v-btn(depressed, type="submit", :small="$vuetify.breakpoint.xs", color="primary") terminer
+            v-btn(depressed, type="submit", :small="$vuetify.breakpoint.xs", color="primary", :disabled="!valid") terminer
           v-spacer
           v-col(align="end")
             v-btn(depressed, @click="stepper = 2", :small="$vuetify.breakpoint.xs") retour
-    v-snackbar(v-model="snackbar", color="error", :timeout="5000", top)
-      v-row.ma-0.pa-0
-        v-col(cols="12", align="center").ma-0.pa-0
-          v-icon(left) {{svg.mdiAlert}}
-          template(v-if="error && error.code == 409").
-            #[span.text-capitalize un] compte avec cet email existe déjà !
-          span(v-else).
-            #[span.text-capitalize il] semble que vous n'ayez pas rempli certaines informations.
-
 </template>
 
 <script>
@@ -118,12 +110,69 @@ import {
 
 import { mapGetters, mapActions } from 'vuex'
 
+import { EventBus } from '@/utils/event-bus'
+
 export default {
   name: 'SignupForm',
+  async fetch() {
+    try {
+      const response = this.findSubjects()
+      if (!response.data.length) {
+        this.subjects = await this.Subjects()
+      } else {
+        this.subjects = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des matières',
+        active: true,
+        close: true
+      })
+    }
+    try {
+      const response = this.findDepartments()
+      if (!response.data.length) {
+        this.departments = await this.Departments()
+      } else {
+        this.departments = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des départements',
+        active: true,
+        close: true
+      })
+    }
+    try {
+      const response = this.findYears()
+      if (!response.data.length) {
+        this.years = await this.Years()
+      } else {
+        this.years = response.data
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error(error)
+      EventBus.$emit('snackEvent', {
+        color: 'error',
+        message: 'Une erreur est survenue lors du chargement des années',
+        active: true,
+        close: true
+      })
+    }
+  },
+  fetchOnServer: false,
   data() {
     return {
-      error: {},
-      snackbar: false,
+      subjects: null,
+      years: null,
+      departments: null,
       valid: true,
       showPassword: false,
       showConfirmedPassword: false,
@@ -197,17 +246,22 @@ export default {
         query: { _id: { $in: ids } }
       })
       return data.data ? data.data : null
-    }
-  },
-  async mounted() {
-    if (this.findSubjects().data.length === 0) {
-      await this.Subjects({ query: {}, paginate: false })
-    }
-    if (this.findYears().data.length === 0) {
-      await this.Years({ query: {}, paginate: false })
-    }
-    if (this.findDepartments().data.length === 0) {
-      await this.Departments({ query: {}, paginate: false })
+    },
+    createAccount() {
+      return (
+        !this.editedItem.lastName ||
+        !this.editedItem.firstName ||
+        !this.editedItem.email ||
+        !this.editedItem.password ||
+        !this.confirmPassword
+      )
+    },
+    aboutYou() {
+      return (
+        !this.editedItem.yearId ||
+        !this.editedItem.departmentId ||
+        !this.editedItem.permissions.length
+      )
     }
   },
   methods: {
@@ -230,14 +284,29 @@ export default {
             this.$router.push({ to: '/' })
           })
           .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error)
+            const message =
+              error.code === 409
+                ? 'un compte avec cet email existe déjà !'
+                : 'Une erreur est survenue lors du chargement des années'
             this.$nuxt.$loading.finish()
-            this.snackbar = true
-            this.error = error
+            EventBus.$emit('snackEvent', {
+              color: 'error',
+              message,
+              active: true,
+              close: true
+            })
           })
       } else {
         this.$nuxt.$loading.finish()
-
-        this.snackbar = true
+        EventBus.$emit('snackEvent', {
+          color: 'error',
+          message:
+            "Il semble que vous n'ayez pas rempli certaines informations.",
+          active: true,
+          close: true
+        })
       }
     }
   }

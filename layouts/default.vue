@@ -92,6 +92,7 @@ import Snack from '@/components/Misc/GlobalSnack'
 import FormPost from '@/components/Post/FormPost'
 
 export default {
+  name: 'DefaultLayout',
   components: {
     'logout-app': Logout,
     'snack-app': Snack,
