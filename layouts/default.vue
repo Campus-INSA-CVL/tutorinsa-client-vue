@@ -125,7 +125,7 @@ export default {
         },
         {
           title: 'aide',
-          link: '/help',
+          link: '/help/how-it-works',
           icon: 'mdiHelpCircle'
         },
         {

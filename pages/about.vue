@@ -3,12 +3,12 @@
     v-col(cols="12", align="center")
        v-img(alt="logo de l'association TutorINSA", :src="require('~/assets/img/icon.png')", width="200").mt-2.mb-4
     v-col(cols="12")
-      title-app(:textCenter="true")
+      title-app(textCenter)
         template(slot="default") #[span.text-capitalize à] propos de #[tutorinsa-app]
     v-col(cols="12", sm="10", md="8", xl="6", align="center")
       welcome-app
     v-col(cols="12")
-      title-app(:textCenter="true").mt-4
+      title-app(textCenter).mt-4
         template(slot="default") #[span.text-capitalize à] propos du site
     v-col(cols="12", sm="10", md="8", xl="6", align="center")
       site-app
