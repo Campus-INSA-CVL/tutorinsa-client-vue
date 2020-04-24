@@ -15,7 +15,10 @@
           section(slot-scope="{ items: posts , isFindPending }")
             v-row(justify="space-around")
               v-col(cols="12", sm="6", lg="4",v-for="(post, index) in posts", :key="index", align-self="center")
-                preview-post-app(:post="post", shareBtn, hoverProp)
+                component(:is="transition !== 'None' ? `v-${transition}` : 'div'"
+          hide-on-leave)
+                  v-skeleton-loader(type="article, actions", v-if="isFindPending")
+                  preview-post-app(:post="post", shareBtn, hoverProp, v-else)
 </template>
 
 <script>
@@ -36,6 +39,11 @@ export default {
     'signup-app': Signup,
     'preview-post-app': PreviewPost,
     'welcome-app': Welcome
+  },
+  data() {
+    return {
+      transition: 'fade-transition'
+    }
   },
   computed: {
     ...mapGetters({
