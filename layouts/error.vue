@@ -3,7 +3,7 @@
     v-row(justify="space-around")
       v-col(cols="12", align="center")
         div(v-if="error.statusCode === 404", :data-text="pageNotFound").glitch {{pageNotFound}}
-        div(v-if="error.statusCode === 500", :data-text="internalServerError").glitch {{internalServerError}}
+        div(v-else-if="error.statusCode === 500", :data-text="internalServerError").glitch {{internalServerError}}
         div(v-else, :data-text="`${error.statusCode}, ${otherError}`").glitch {{error.statusCode}},&nbsp;{{otherError}}
 
       v-col(cols="6", align="center")
