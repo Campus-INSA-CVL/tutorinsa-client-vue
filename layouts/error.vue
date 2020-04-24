@@ -7,11 +7,11 @@
         div(v-else, :data-text="`${error.statusCode}, ${otherError}`").glitch {{error.statusCode}},&nbsp;{{otherError}}
 
       v-col(cols="6", align="center")
-        v-btn(@click="more")
+        v-btn(@click="more", depressed)
           v-icon(left) {{svg.mdiLightbulbOn}}
           span en savoir plus
       v-col(cols="6", align="center")
-        v-btn(:href="`mailto:${email}?subject=TutorINSA: Error ${this.error.statusCode}&body=Name: ${this.error.name}%0D%0ACode: ${this.error.statusCode}%0D%0AMessage: ${this.error.message}%0D%0A`")
+        v-btn(:href="`mailto:${email}?subject=TutorINSA: Error ${this.error.statusCode}&body=Name: ${this.error.name}%0D%0ACode: ${this.error.statusCode}%0D%0AMessage: ${this.error.message}%0D%0A`", depressed)
           v-icon(left) {{svg.mdiEmail}}
           span envoyer un rapport d'erreur
 </template>
