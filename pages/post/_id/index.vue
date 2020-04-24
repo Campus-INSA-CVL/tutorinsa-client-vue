@@ -2,7 +2,7 @@
   v-row
     v-col(cols="12", md="7")
       post-app(:post="post")
-    v-col(cols="6", md="5", v-if="post && post.creator")
+    v-col(cols="12", md="6", v-if="post && post.creator")
       about-creator-app(:creator="post.creator")
 </template>
 
