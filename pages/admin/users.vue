@@ -1,5 +1,5 @@
 <template lang="pug">
-  iterator-table-app(:numberOfItems="numberOfUsers", service="users", modelName="User", editable, deletable)
+  iterator-table-app(service="users", modelName="User", editable, deletable)
     template(v-slot:title="{ item }") #[span.text-uppercase {{ item.lastName }}]&nbsp;#[span.text-capitalize {{ item.firstName }}]
 
     template(v-slot:subtitle="{ item }") {{item.email}}
@@ -24,8 +24,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
 import IteratorDataTable from '@/components/Admin/IteratorDataTable'
 import EditUser from '@/components/User/EditUser'
 
@@ -34,24 +32,6 @@ export default {
   components: {
     'iterator-table-app': IteratorDataTable,
     'edit-user-app': EditUser
-  },
-  data() {
-    return {
-      numberOfUsers: null
-    }
-  },
-  async mounted() {
-    try {
-      const response = await this.Users({ query: { $limit: 0 } })
-      this.numberOfUsers = response.total
-    } catch (error) {
-      throw new Error(error.message)
-    }
-  },
-  methods: {
-    ...mapActions({
-      Users: 'users/find'
-    })
   }
 }
 </script>
