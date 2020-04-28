@@ -1,14 +1,13 @@
 <template lang="pug">
-  FeathersVuexFind(:service="service",  :query="internalQuery", :edit-scope="getPaginationInfo", :fetch-query="fetchQuery")
-    section(slot-scope="{ items: items, isFindPending}")
+  FeathersVuexFind(:service="service",  :query="internalQuery", :edit-scope="getPaginationInfo", :fetch-query="fetchQuery", :queryWhen="queryWhen", :watch="['query.$skip', 'query.$limit']")
+    section(slot-scope="{ items: items, isFindPending }")
       v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage",  :sort-desc="sortDesc", :page="page", hide-default-footer, loading)
-
-        template(v-slot:header="{ pagination, options}")
+        template(v-slot:header)
           v-toolbar(flat)
-            div {{fetchQuery}}
             v-spacer
-            v-col(cols="2")
-              v-select(label="Élements par page", :items="itemsPerPageArray", :menu-props="{bottom: true, offsetY: true}", v-model="itemsPerPage", hide-details, outlined, dense)
+            v-toolbar-items
+              v-col(cols="12")
+                v-select(label="Élements par page", :items="itemsPerPageArray", :menu-props="{bottom: true, offsetY: true}", v-model="itemsPerPage", hide-details, outlined, dense)
 
         template(v-slot:footer)
           v-pagination(v-model="page", :length="numberOfPages")
@@ -35,7 +34,7 @@
         template(v-slot:loading)
           v-row
             v-col(v-for="(item) in numberOfSkeletons", :key="item", cols="12", sm="6", lg="3", align="center", justify="center")
-              v-skeleton-loader(type="article, actions")
+              v-skeleton-loader(type="article, list-item-three-line, actions").text-right
 
 
       v-dialog(v-model="dialog", max-width="600px")
@@ -92,8 +91,9 @@ export default {
       },
       ids: [],
       query: {},
+      pagination: null,
       total: 0,
-      limit: 10,
+      limit: 0,
       skip: 0,
       itemsPerPage: null,
       sortDesc: false,
@@ -115,7 +115,6 @@ export default {
     },
     internalQuery() {
       const { idField } = this.$store.state[this.service]
-      console.log(idField)
       return {
         [idField]: {
           $in: this.ids
@@ -123,23 +122,59 @@ export default {
       }
     },
     fetchQuery() {
-      console.debug(this.total)
       return Object.assign({}, this.query, {
         $limit: this.limit,
         $skip: this.skip
       })
     }
   },
-  mounted() {
+  watch: {
+    page(value) {
+      this.$vuetify.goTo(0, {
+        duration: 600,
+        easing: 'easeInOutCubic'
+      })
+      this.skip = this.itemsPerPage * (value - 1)
+    },
+    itemsPerPage() {
+      this.limit = this.itemsPerPage
+    }
+  },
+  created() {
+    this.limit = this.itemsPerPageArray[0]
     this.itemsPerPage = this.itemsPerPageArray[0]
   },
   methods: {
+    queryWhen() {
+      if (this.pagination) {
+        const queryString = JSON.stringify(this.query)
+        const queryKeys = Object.keys(this.pagination)
+
+        if (queryKeys.includes(queryString)) {
+          const pageIdString = `{"$limit":${this.limit},"$skip":${this.skip}}`
+          const pageIdKeys = Object.keys(this.pagination[queryString])
+
+          if (pageIdKeys.includes(pageIdString)) {
+            const { ids } = this.pagination[queryString][pageIdString]
+
+            this.ids = ids
+
+            return false
+          }
+        }
+        return true
+      } else {
+        return true
+      }
+    },
     getPaginationInfo(scope) {
-      const { queryInfo, pageInfo } = scope
-      console.log(scope)
+      const { queryInfo, pageInfo, pagination } = scope
+      this.pagination = pagination
       this.total = queryInfo.total
-      if (pageInfo && pageInfo.ids) {
-        this.ids = pageInfo.ids
+      if (this.queryWhen()) {
+        if (pageInfo?.ids?.length) {
+          this.ids = pageInfo.ids
+        }
       }
     },
     deleteItem(item) {

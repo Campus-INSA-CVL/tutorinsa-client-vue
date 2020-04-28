@@ -1,5 +1,5 @@
 <template lang="pug">
-  iterator-table-app(:numberOfItems="numberOfCalendars", service="calendar", modelName="Calendar")
+  iterator-table-app(:numberOfItems="numberOfCalendars", service="calendar", modelName="Calendar", :itemsPerPageArray="[12, 24, 36]")
     template(v-slot:title="{ item }") {{ $moment(item.date).format('dddd LL [à] LT') }}
 
     template(v-slot:subtitle="{ item }")

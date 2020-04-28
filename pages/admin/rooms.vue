@@ -1,5 +1,5 @@
 <template lang="pug">
-  iterator-table-app(:numberOfItems="numberOfRooms", service="rooms", modelName="Room", deletable)
+  iterator-table-app(:numberOfItems="numberOfRooms", service="rooms", modelName="Room", deletable, :itemsPerPageArray="[12, 24, 36]")
     template(v-slot:title="{ item }") #[span.text-uppercase.primary--text {{item.name}}]&nbsp;-&nbsp;#[span.text-capitalize {{item.day}}]
 
 

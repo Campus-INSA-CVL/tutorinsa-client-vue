@@ -1,9 +1,9 @@
 <template lang="pug">
   v-stepper(v-model="stepper", vertical).elevation-4
     v-form(autocomplete="on", @submit.prevent="signup()", ref="form", v-model="valid")
+
       v-stepper-step(:complete="stepper > 1", step="1", editable)
-        span.
-          #[span.text-capitalize créer] un compte
+        span #[span.text-capitalize créer] un compte
 
       v-stepper-content(step="1")
         v-card(elevation="0")

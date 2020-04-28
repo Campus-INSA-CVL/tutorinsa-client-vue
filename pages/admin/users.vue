@@ -1,5 +1,5 @@
 <template lang="pug">
-  iterator-table-app(service="users", modelName="User", editable, deletable)
+  iterator-table-app(service="users", modelName="User", editable, deletable, :itemsPerPageArray="[12, 24, 36]")
     template(v-slot:title="{ item }") #[span.text-uppercase {{ item.lastName }}]&nbsp;#[span.text-capitalize {{ item.firstName }}]
 
     template(v-slot:subtitle="{ item }") {{item.email}}

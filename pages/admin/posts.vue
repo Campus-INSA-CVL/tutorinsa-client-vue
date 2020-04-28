@@ -1,5 +1,5 @@
 <template lang="pug">
-  iterator-table-app(:numberOfItems="numberOfPosts", service="posts", modelName="posts")
+  iterator-table-app(:numberOfItems="numberOfPosts", service="posts", modelName="posts", :itemsPerPageArray="[12, 24, 36]")
     template(v-slot:card="{ item }")
       preview-post-app(:post="item", outlined)
 </template>

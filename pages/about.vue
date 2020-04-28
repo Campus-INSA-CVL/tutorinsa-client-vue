@@ -12,8 +12,6 @@
         template(slot="default") #[span.text-capitalize à] propos du site
     v-col(cols="12", sm="10", md="8", xl="6", align="center")
       site-app
-
-
 </template>
 
 <script>
