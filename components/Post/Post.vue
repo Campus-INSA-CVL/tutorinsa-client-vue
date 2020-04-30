@@ -19,6 +19,8 @@
 <script>
 import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
 
+import { EventBus } from '@/utils/event-bus'
+
 export default {
   name: 'Post',
   props: {
@@ -52,7 +54,15 @@ export default {
           title: `TutorINSA: ${post.subject.name.toUpperCase()}`
         })
       } catch (error) {
-        console.log(error)
+        // eslint-disable-next-line
+        console.error(error)
+        EventBus.$emit('snackEvent', {
+          color: 'error',
+          message:
+            'Une erreur est survenue lors du chargement de la fonction partager',
+          active: true,
+          close: true
+        })
       }
     }
   }
