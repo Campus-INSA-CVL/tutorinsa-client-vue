@@ -1,5 +1,5 @@
 <template lang="pug">
-  FeathersVuexFind(:service="service",  :query="internalQuery", :edit-scope="getPaginationInfo", :fetch-query="fetchQuery", :queryWhen="queryWhen", :watch="['query.$skip', 'query.$limit']")
+  FeathersVuexFind(:service="service",  :query="internalQuery", :edit-scope="getPaginationInfo", :fetch-query="fetchQuery", :queryWhen="queryWhen", :watch="['query.$skip', 'query.$limit']", :qid="service")
     section(slot-scope="{ items: items, isFindPending }")
       v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage",  :sort-desc="sortDesc", :page="page", hide-default-footer, loading)
         template(v-slot:header)

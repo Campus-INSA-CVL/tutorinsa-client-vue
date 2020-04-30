@@ -19,13 +19,17 @@
       v-card-text.text-justify.body-1.text-truncate {{post.comment}}
 
       v-card-actions
+        v-btn(v-if="deletable && isCreator", outlined, @click="deletePost").red--text delete
         v-spacer
         v-btn(depressed, outlined, @click="share(post)", v-if="shareBtn") partager
         v-btn(depressed, :color="isEleve(post.type) ? 'eleve': 'primary'", nuxt, :to="`/post/${post._id}`") voir plus
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
+
+import { EventBus } from '@/utils/event-bus'
 
 export default {
   name: 'PreviewPost',
@@ -47,6 +51,10 @@ export default {
     shareBtn: {
       type: Boolean,
       default: false
+    },
+    deletable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -58,9 +66,29 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    }),
+    isCreator() {
+      return (
+        (this.user?._id &&
+          this.post?.creator?._id &&
+          this.post.creator._id === this.user._id) ||
+        this.user?.permissions?.includes('admin')
+      )
+    }
+  },
   methods: {
     isEleve(type) {
       return type === 'eleve'
+    },
+    deletePost() {
+      const Model = this.$FeathersVuex.api.Post
+      const deleteModel = new Model({ id: this.post._id })
+      confirm(
+        'Êtes vous sûr de vouloir supprimer cette annonce ? 😥 Cette action est irréversible !'
+      ) && deleteModel.remove()
     },
     async share(post) {
       try {
@@ -74,7 +102,15 @@ export default {
           title: `TutorINSA: ${post.subject.name.toUpperCase()}`
         })
       } catch (error) {
-        console.log(error)
+        // eslint-disable-next-line
+        console.error(error)
+        EventBus.$emit('snackEvent', {
+          color: 'error',
+          message:
+            'Une erreur est survenue lors du chargement de la fonction partager',
+          active: true,
+          close: true
+        })
       }
     }
   }

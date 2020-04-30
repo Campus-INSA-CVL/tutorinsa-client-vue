@@ -9,7 +9,7 @@
             v-tab(v-for="(item, index) in tabs", :key="index", :to="item.link", nuxt, exact) {{item.name}}
     v-col(cols="12")
       v-container(fluid)
-        nuxt-child
+        nuxt-child(keep-alive)
 </template>
 
 <script>
