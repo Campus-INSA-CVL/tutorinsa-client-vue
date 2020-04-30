@@ -32,8 +32,8 @@
                       header.text-left #[span.text-capitalize type] de l'annonce
                       v-radio-group(v-model="editedItem.type", row, :rules="[rules.required]")
                         v-row(justify="center")
-                          v-radio(label="Tuteur", value="tuteur", :color="colorPost").font-weight-bold
-                          v-radio(label="Élève", value="eleve", :color="colorPost").font-weight-bold
+                          v-radio(label="Tuteur", value="tuteur", :color="colorPost", :disabled="!userPermissions('tuteur')").font-weight-bold
+                          v-radio(label="Élève", value="eleve", :color="colorPost", :disabled="!userPermissions('eleve')").font-weight-bold
 
                       header.text-left #[span.text-capitalize campus] de l'annonce
                       v-radio-group(v-model="editedItem.campus", row, :rules="[rules.required, rules.campus]")
@@ -202,6 +202,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      user: 'auth/user',
       findSubjects: 'subjects/find',
       getSubject: 'subjects/get',
       getRoom: 'rooms/get',
@@ -460,6 +461,12 @@ export default {
       Rooms: 'rooms/find',
       Calendars: 'calendar/find'
     }),
+    userPermissions(type) {
+      return (
+        this.user?.permissions.includes(type) ||
+        this.user?.permissions.includes('admin')
+      )
+    },
     allowedDates(val) {
       return (
         this.$moment()

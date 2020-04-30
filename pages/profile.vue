@@ -2,10 +2,10 @@
   v-row(justify="start")
     v-col(cols="12", sm="8", md="6", lg="4")
       user-app(:user="user")
-    v-col(cols="12", sm="4", md="6", lg="8").pt-0
+    v-col(cols="12", sm="4", md="6", lg="8", v-if="user").pt-0
       v-row()
         v-col(v-for="(post, index) in user.createdPosts",:key="index", cols="12", md="6")
-          preview-post-app(:post="post", hoverProp, shareBtn, deletable)
+          preview-post-app(:post="post", hoverProp, deletable)
 </template>
 
 <script>
