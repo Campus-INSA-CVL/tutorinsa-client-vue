@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import { mdiMapMarker, mdiClockOutline, mdiClockStart } from '@mdi/js'
 
 import IteratorDataTable from '@/components/Admin/IteratorDataTable'
@@ -32,19 +31,6 @@ export default {
       },
       numberOfRooms: null
     }
-  },
-  async mounted() {
-    try {
-      const response = await this.Rooms({ query: { $limit: 0 } })
-      this.numberOfRooms = response.total
-    } catch (error) {
-      throw new Error(error.message)
-    }
-  },
-  methods: {
-    ...mapActions({
-      Rooms: 'rooms/find'
-    })
   }
 }
 </script>

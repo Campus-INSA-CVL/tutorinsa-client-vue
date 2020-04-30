@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
 import IteratorDataTable from '@/components/Admin/IteratorDataTable'
 
 export default {
@@ -25,19 +23,6 @@ export default {
     return {
       numberOfCalendars: null
     }
-  },
-  async mounted() {
-    try {
-      const response = await this.Calendar({ query: { $limit: 0 } })
-      this.numberOfCalendars = response.total
-    } catch (error) {
-      throw new Error(error.message)
-    }
-  },
-  methods: {
-    ...mapActions({
-      Calendar: 'calendar/find'
-    })
   }
 }
 </script>
