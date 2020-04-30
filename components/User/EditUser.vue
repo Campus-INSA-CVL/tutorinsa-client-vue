@@ -25,7 +25,7 @@
           header.text-left #[span.text-capitalize permissions] de l'utilisateur
         v-checkbox(v-model="editedItem.permissions", label="Elève", value="eleve")
         v-checkbox(v-model="editedItem.permissions", label="Tuteur", value="tuteur")
-        v-checkbox(v-model="editedItem.permissions", label="Admin", value="admin")
+        v-checkbox(v-model="editedItem.permissions", label="Admin", value="admin", v-if="isAdmin")
 
 
     v-card-actions
@@ -131,11 +131,15 @@ export default {
   fetchOnServer: false,
   computed: {
     ...mapGetters({
+      user: 'auth/user',
       findSubjects: 'subjects/find',
       findYears: 'years/find',
       findDepartments: 'departments/find',
       findUsers: 'users/find'
-    })
+    }),
+    isAdmin() {
+      return this.user.permissions.includes('admin')
+    }
   },
   watch: {
     item(item, prev) {
