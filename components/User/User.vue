@@ -43,8 +43,8 @@ div
     | #[span.text-capitalize vous] n'avez pas accès à cette page !
     br
     | #[span.text-capitalize connectez] vous pour accéder à votre profil !
-  v-dialog(v-model="dialog", max-width="500")
-    edit-user-app(:item="user")
+  v-dialog(v-model="dialog", max-width="600")
+    edit-user-app(:item="user", dialog, v-model="dialog")
 </template>
 
 <script>

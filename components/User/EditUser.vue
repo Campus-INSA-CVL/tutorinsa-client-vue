@@ -1,6 +1,9 @@
 <template lang="pug">
   v-card
     v-card-title #[span.text-capitalize.primary--text modification]&nbsp;d'un utilisateur
+      v-spacer
+      v-btn(@click="close", v-if="dialog", icon).primary--text
+        v-icon {{svg.mdiClose}}
     v-card-text
       v-row
         v-col(cols="12", md="6")
@@ -35,6 +38,7 @@
 </template>
 
 <script>
+import { mdiClose } from '@mdi/js'
 import { mapGetters, mapActions } from 'vuex'
 
 import { EventBus } from '@/utils/event-bus'
@@ -42,6 +46,14 @@ import { EventBus } from '@/utils/event-bus'
 export default {
   name: 'EditUser',
   props: {
+    dialog: {
+      type: Boolean,
+      dafault: false
+    },
+    value: {
+      type: Boolean,
+      default: false
+    },
     item: {
       type: Object,
       default: () => null
@@ -104,6 +116,9 @@ export default {
   },
   data() {
     return {
+      svg: {
+        mdiClose
+      },
       subjects: null,
       years: null,
       departments: null,
@@ -166,14 +181,41 @@ export default {
       )
       this.editedId = item._id
     },
+    close() {
+      this.$emit('input', false)
+    },
     cancel() {
       this.editItem(this.item)
+      this.close()
     },
     save() {
+      this.$nuxt.$loading.start()
       const Model = this.$FeathersVuex.api.User
       const data = Object.assign({}, this.editedItem)
       const patchModel = new Model({ id: this.editedId })
-      patchModel.patch({ data })
+      patchModel
+        .patch({ data })
+        .then((res) => {
+          this.$nuxt.$loading.finish()
+          EventBus.$emit('snackEvent', {
+            color: 'primary',
+            message: 'Modifications réalisées avec succès',
+            active: true,
+            close: true
+          })
+          this.close()
+        })
+        .catch((error) => {
+          this.$nuxt.$loading.finish()
+          // eslint-disable-next-line
+        console.error(error)
+          EventBus.$emit('snackEvent', {
+            color: 'error',
+            message: 'Une erreur est survenue des modifications du profil',
+            active: true,
+            close: true
+          })
+        })
     }
   }
 }

@@ -571,7 +571,6 @@ export default {
         data.duration = duration.format()
         data.date = date.format()
         const newPost = new Post(data)
-        console.debug('newPost:', newPost)
         newPost
           .create()
           .then((response) => {
@@ -587,13 +586,14 @@ export default {
           })
           .catch((error) => {
             this.$nuxt.$loading.finish()
+            // eslint-disable-next-line
+            console.error(error)
             EventBus.$emit('snackEvent', {
               color: 'error',
+              message: 'Une erreur est survenue',
               active: true,
-              message: 'Une error est survenu',
-              close: false
+              close: true
             })
-            console.error(error)
           })
       } else {
         this.$nuxt.$loading.finish()
