@@ -19,9 +19,11 @@ class Post extends BaseModel {
       studentsIds: [],
       tutorsIds: [],
       type: '',
-      date: '',
-      duration: '',
-      roomId: ''
+      startAt: '',
+      duration: 0,
+      roomId: '',
+      studentsCapacity: 0,
+      tutorsCapacity: 0
     }
   }
 }

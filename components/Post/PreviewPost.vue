@@ -4,17 +4,17 @@
 
       v-card-title
         span.text-uppercase.font-weight-bold {{post.subject.name}}
-        span.subtitle-2 &nbsp;({{$moment(post.date).fromNow()}})
+        span(v-if="post.startAt").subtitle-2 &nbsp;({{$moment(post.startAt).fromNow()}})
 
       v-card-subtitle.text-left
-        v-icon(small, left) {{svg.mdiCalendar}}
-        span.text-capitalize &nbsp;{{$moment(post.date).local().format('dddd LL')}}
-        br
-        v-icon(small, left) {{svg.mdiClockOutline}}
-        span {{$moment(post.date).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;({{$moment(post.duration).utc().format('HH[:]mm')}})
-        br
+        v-icon(small, left, v-if="post.startAt") {{svg.mdiCalendar}}
+        span(v-if="post.startAt").text-capitalize &nbsp;{{$moment(post.startAt).local().format('dddd LL')}}
+        br(v-if="post.startAt")
+        v-icon(small, left, v-if="post.endAt") {{svg.mdiClockOutline}}
+        span(v-if="post.endAt") {{$moment(post.startAt).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;({{$moment.utc(0).add($moment.duration(post.duration, 'minutes')).format('HH[:]mm')}})
+        br(v-if="post.endAt")
         v-icon(small, left, v-if="post.creator") {{svg.mdiSchool}}
-        span(v-if="post.creator")  {{post.creator.lastName}} #[span.text-capitalize {{post.creator.firstName}}]
+        span(v-if="post.creator")  #[span.text-uppercase {{post.creator.lastName}}] #[span.text-capitalize {{post.creator.firstName}}]
 
       v-card-text.text-justify.body-1.text-truncate {{post.comment}}
 
@@ -94,7 +94,7 @@ export default {
       try {
         await navigator.share({
           url: `post/${post._id}`,
-          text: `${this.$moment(post.date)
+          text: `${this.$moment(post.startAt)
             .local()
             .format('[Le] dddd LL [à] LT')}\n\nLe mot du tuteur: ${
             post.comment
