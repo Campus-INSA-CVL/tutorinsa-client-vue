@@ -49,6 +49,12 @@
                           v-textarea(outlined, label="Commentaire", clearable, auto-grow, counter=220, :placeholder="editedItem.type === 'tuteur' ? 'Décrivez ici ce que vous allez faire durant votre séance !' : 'Décrivez ici ce que vous aimeriez apprendre !' ", :color="colorPost", rows=3, v-model="editedItem.comment", :rules="[rules.required, rules.commentLength]")
 
                         v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-text-field(:color="colorPost", outlined, clearable, label="Nombre de tuteurs", :rules="[rules.required, rules.min, rules.maxTutors]", v-model="editedItem.tutorsCapacity", type="number")
+
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
+                          v-text-field(:color="colorPost", outlined, clearable, label="Nombre d'élèves", :rules="[rules.required, rules.min, rules.maxStudents]", v-model="editedItem.studentsCapacity", type="number")
+
+                        v-col(cols="12", sm="6", v-if="this.editedItem.type === 'tuteur'")
                           v-menu(ref="dateMenu", :close-on-content-click="false", v-model="dateMenu", transition="slide-y-transition", :return-value.sync="editedItem.date",  min-width="290px", offset-y, bottom, origin="bottom center", :nudge-bottom="-20")
                             template(v-slot:activator="{on}")
                               v-text-field(v-on="on", readonly, :prepend-inner-icon="svg.mdiCalendar", :color="colorPost", outlined, @click:clear="editedItem.date = null", :value="formattedDate", clearable, label="Choisissez une date", :rules="[rules.required, rules.isDate]", :disabled="!editedItem.subjectId")
@@ -171,7 +177,10 @@ export default {
           'Votre texte est trop long !',
         isDate: () =>
           this.$moment(this.editedItem.date).isValid() || 'Date non valide',
-        patternTime: (v) => /\d{2}:(00|30)/g.test(v) || 'Temps invalide'
+        patternTime: (v) => /\d{2}:(00|30)/g.test(v) || 'Temps invalide',
+        min: (v) => v >= 1 || 'Au moins 1',
+        maxTutors: (v) => v <= 5 || 'Au maximum 5',
+        maxStudents: (v) => v <= 25 || 'Au maximum 20'
       },
       dialog: false,
       valid: true,
@@ -186,7 +195,9 @@ export default {
         duration: '',
         time: '',
         type: 'tuteur',
-        roomId: null
+        roomId: null,
+        studentsCapacity: null,
+        tutorsCapacity: null
       },
       resetItem: {
         campus: null,
@@ -196,7 +207,9 @@ export default {
         duration: '',
         time: '',
         type: 'tuteur',
-        roomId: null
+        roomId: null,
+        studentsCapacity: null,
+        tutorsCapacity: null
       }
     }
   },
@@ -208,7 +221,7 @@ export default {
       getRoom: 'rooms/get',
       findRooms: 'rooms/find',
       findPosts: 'posts/find',
-      findCalendars: 'calendar/find'
+      findCalendars: 'calendars/find'
     }),
     colorPost() {
       return this.editedItem.type === 'eleve' ? 'eleve' : 'primary'
@@ -292,7 +305,7 @@ export default {
         const date = this.$moment.utc(this.editedItem.date).format()
 
         calendars = this.findCalendars({
-          query: { roomId, date: { $gte: date, $lte: afterDate } }
+          query: { roomId, startAt: { $gte: date, $lte: afterDate } }
         })
 
         let numberPreviousSlot = 0
@@ -306,8 +319,9 @@ export default {
           })
         }
         duration = this.$moment
-          .utc(room.duration)
-          .subtract(30 * numberPreviousSlot, 'minute')
+          .utc(0)
+          .add(room.duration, 'minutes')
+          .subtract(30 * numberPreviousSlot, 'minutes')
           .format('HH[:]mm')
         if (calendars.data[0] && calendars.data[0].slots) {
           let found = false
@@ -339,7 +353,7 @@ export default {
           .add(1, 'day')
           .format()
         const calendars = this.findCalendars({
-          query: { date: { $gte: date, $lte: afterDate } }
+          query: { startAt: { $gte: date, $lte: afterDate } }
         })
         const postsId = []
         calendars.data.forEach((calendar) => {
@@ -388,11 +402,11 @@ export default {
         const date = this.$moment.utc(this.editedItem.date).format()
         try {
           calendars = await this.findCalendars({
-            query: { date: { $gte: date, $lte: afterDate } }
+            query: { startAt: { $gte: date, $lte: afterDate } }
           })
           if (!calendars.data.length) {
             await this.Calendars({
-              query: { date: { $gte: date, $lte: afterDate } }
+              query: { startAt: { $gte: date, $lte: afterDate } }
             })
           }
         } catch (error) {
@@ -411,11 +425,11 @@ export default {
         const date = this.$moment.utc(this.editedItem.date).format()
         try {
           calendars = await this.findCalendars({
-            query: { roomId, date: { $gte: date, $lte: afterDate } }
+            query: { roomId, startAt: { $gte: date, $lte: afterDate } }
           })
           if (!calendars.data.length) {
             calendars = await this.Calendars({
-              query: { roomId, date: { $gte: date, $lte: afterDate } }
+              query: { roomId, startAt: { $gte: date, $lte: afterDate } }
             })
           }
         } catch (error) {
@@ -459,7 +473,7 @@ export default {
     ...mapActions({
       Subjects: 'subjects/find',
       Rooms: 'rooms/find',
-      Calendars: 'calendar/find'
+      Calendars: 'calendars/find'
     }),
     userPermissions(type) {
       return (
@@ -481,7 +495,7 @@ export default {
 
         const date = this.$moment.utc(this.editedItem.date).format()
         const calendars = this.findCalendars({
-          query: { roomId: this.editedItem.roomId, date: { $gte: date } }
+          query: { roomId: this.editedItem.roomId, startAt: { $gte: date } }
         })
         if (calendars.data.length === 0) {
           return true
@@ -509,12 +523,11 @@ export default {
       return false
     },
     allowedHours(h) {
-      console.debug('h:', h)
       let available = true
 
       const date = this.$moment.utc(this.editedItem.date).format()
       const calendars = this.findCalendars({
-        query: { roomId: this.editedItem.roomId, date: { $gte: date } }
+        query: { roomId: this.editedItem.roomId, startAt: { $gte: date } }
       })
       if (calendars.data.length === 0) {
         return true
@@ -559,17 +572,18 @@ export default {
         date.hours(timeDate.hours())
         date.minutes(timeDate.minutes())
 
-        const duration = this.$moment.utc(0)
+        let duration = this.$moment.utc(0)
         const timeDuration = this.$moment.utc(
           this.$moment.utc(this.editedItem.duration, 'LT').format()
         )
-        duration.hours(timeDuration.hours())
-        duration.minutes(timeDuration.minutes())
+        duration = timeDuration.minutes() + timeDuration.hours() * 60
 
         const { Post } = this.$FeathersVuex.api
         const data = Object.assign({}, this.editedItem)
-        data.duration = duration.format()
-        data.date = date.format()
+        data.studentsCapacity = Number(data.studentsCapacity)
+        data.tutorsCapacity = Number(data.tutorsCapacity)
+        data.duration = duration
+        data.startAt = date.format()
         const newPost = new Post(data)
         newPost
           .create()

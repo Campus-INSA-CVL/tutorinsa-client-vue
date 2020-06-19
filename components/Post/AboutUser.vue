@@ -1,30 +1,29 @@
 <template lang="pug">
   v-card(outlined)
-    v-card-title #[span.text-capitalize à]&nbsp;propos du tuteur
+    v-card-title
+      v-icon(left) {{svg.mdiAccount}}
+      | #[span.text-uppercase {{user.lastName}}]&nbsp;#[span.text-capitalize {{user.firstName}}]
     v-card-text
       div
-        v-icon(left, small) {{svg.mdiAccount}}
-        | #[span.text-uppercase {{creator.lastName}}] #[span.text-capitalize {{creator.firstName}}]
-      div
         v-icon(left, small) {{svg.mdiEmail}}
-        | {{creator.email}}
+        | {{user.email}}
       div
         v-icon(left, small) {{svg.mdiCardText}}
-        | année
-        | département
+        span {{user.year.name.toUpperCase()}}-{{user.department.name.toUpperCase()}}
       div
         v-icon(left, small) {{svg.mdiStar}}
-        | matières préférées
-    v-card-actions
+        span matières préférées
+        ul
+          li(v-for="(subject, index) in user.favoriteSubjects", :key="index") {{subject.name}}
 </template>
 
 <script>
 import { mdiAccount, mdiStar, mdiCardText, mdiEmail } from '@mdi/js'
 
 export default {
-  name: 'AboutCreator',
+  name: 'AboutUser',
   props: {
-    creator: {
+    user: {
       type: Object,
       default: () => null
     }

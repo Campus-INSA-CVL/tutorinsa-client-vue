@@ -61,7 +61,7 @@
           form-post-app(v-if="isAuth")
           v-btn(v-if="isAuth", nuxt, to="/profile", depressed, outlined fab, x-small).ml-4
             v-icon() {{svg.mdiAccount}}
-    v-content
+    v-main
       v-container(fluid)
         snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
         nuxt

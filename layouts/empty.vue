@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app
-    v-content
+    v-main
       v-container(fluid)
         snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
         v-row(align="start", justify="center")

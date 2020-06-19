@@ -2,21 +2,25 @@
   v-row
     v-col(cols="12", md="7")
       post-app(:post="post")
-    v-col(cols="12", md="6", v-if="post && post.creator")
-      about-creator-app(:creator="post.creator")
+    v-col(cols="12", sm="6", md="4", v-if="post && post.creator")
+      h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-regular créateur
+      about-user-app(:user="post.creator")
+    v-col(cols="12", sm="6", md="4", v-if="post && othersTutors && othersTutors.length")
+      h3.text-capitalize.font-weight-regular tuteurs
+      about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index")
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 
 import Post from '@/components/Post/Post'
-import AboutCreator from '@/components/Post/AboutCreator'
+import AboutUser from '@/components/Post/AboutUser'
 
 export default {
   name: 'PostId',
   components: {
     'post-app': Post,
-    'about-creator-app': AboutCreator
+    'about-user-app': AboutUser
   },
   asyncData(context) {
     const { store, params, error } = context
@@ -53,12 +57,21 @@ export default {
     },
     loading() {
       return !this.post
+    },
+    othersTutors() {
+      const creatorId = this.post?.creatorId?.toString()
+      return this.post?.tutors?.filter(
+        (tutor) => tutor._id.toString() !== creatorId
+      )
     }
   },
   methods: {
     ...mapActions({
       fetchPost: 'posts/get'
-    })
+    }),
+    isEleve(type) {
+      return type === 'eleve'
+    }
   },
   head() {
     return {

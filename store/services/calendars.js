@@ -20,7 +20,7 @@ class Calendar extends BaseModel {
     }
   }
 }
-const servicePath = 'calendar'
+const servicePath = 'calendars'
 const servicePlugin = makeServicePlugin({
   Model: Calendar,
   service: feathersClient.service(servicePath),

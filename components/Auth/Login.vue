@@ -17,8 +17,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { unpackRules } from '@casl/ability/extra'
-import { decode as decodeJWT } from 'jsonwebtoken'
+// import { unpackRules } from '@casl/ability/extra'
+// import { decode as decodeJWT } from 'jsonwebtoken'
 import { mdiLoginVariant, mdiEmail, mdiLock, mdiEye, mdiEyeOff } from '@mdi/js'
 
 import { EventBus } from '@/utils/event-bus'
@@ -66,13 +66,13 @@ export default {
     async login() {
       this.$nuxt.$loading.start()
       try {
-        const response = await this.auth({
+        /* const response =  */ await this.auth({
           strategy: 'local',
           email: this.email,
           password: this.password
         })
-        const payload = decodeJWT(response.accessToken)
-        this.$ability.update(unpackRules(payload.rules))
+        // const payload = decodeJWT(response.accessToken)
+        // this.$ability.update(unpackRules(payload.rules))
         this.$nuxt.$loading.finish()
         this.$router.push({ name: 'index' })
       } catch (error) {
