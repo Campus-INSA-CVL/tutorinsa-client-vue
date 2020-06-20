@@ -14,7 +14,7 @@ class Calendar extends BaseModel {
   // Define default properties here
   static instanceDefaults() {
     return {
-      date: '',
+      startAt: '',
       roomId: '',
       slots: []
     }

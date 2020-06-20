@@ -1,12 +1,12 @@
 <template lang="pug">
-  iterator-table-app(:numberOfItems="numberOfCalendars", service="calendar", modelName="Calendar", :itemsPerPageArray="[12, 24, 36]")
-    template(v-slot:title="{ item }") {{ $moment(item.date).format('dddd LL [à] LT') }}
+  iterator-table-app(:numberOfItems="numberOfCalendars", service="calendars", modelName="Calendar", :itemsPerPageArray="[12, 24, 36]")
+    template(v-slot:title="{ item }") {{item.room.day}}-{{ $moment(item.startAt).format('LT') }}
 
     template(v-slot:subtitle="{ item }")
 
     template(v-slot:text="{ item }")
       ul
-        li(v-for="(slot, index) in item.slots", :key="index") {{slot.postId}} {{$moment(slot.startAt).format('LLLL')}} {{$moment(slot.startAt).format('LLLL')}}
+        li(v-for="(slot, index) in item.slots", :key="index") {{slot.post.comment}} {{$moment(slot.startAt).format('LLLL')}} {{$moment(slot.startAt).format('LLLL')}}
       div mise à jour le {{ $moment(item.updatedAt).format('LL [à] LT') }} ({{ $moment(item.updatedAt).fromNow() }})
       div créé le {{ $moment(item.createdAt).format('LL [à] LT') }} ({{ $moment(item.createdAt).fromNow() }})
 </template>
