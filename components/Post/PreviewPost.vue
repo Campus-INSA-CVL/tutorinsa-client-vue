@@ -19,7 +19,7 @@
       v-card-text.text-justify.body-1.text-truncate {{post.comment}}
 
       v-card-actions
-        v-btn(v-if="deletable && isCreator", outlined, @click="deletePost").red--text delete
+        v-btn(v-if="deletable && isCreator", outlined, @click="deletePost").red--text supprimer
         v-spacer
         v-btn(depressed, outlined, @click="share(post)", v-if="shareBtn") partager
         v-btn(depressed, :color="isEleve(post.type) ? 'eleve': 'primary'", nuxt, :to="`/post/${post._id}`") voir plus
