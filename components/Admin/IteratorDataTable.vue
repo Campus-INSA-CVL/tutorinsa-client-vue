@@ -16,7 +16,7 @@
 
         template(v-slot:default="props")
           v-row
-            v-col(v-for="(item, indice) in props.items", :key="item.email", cols="12", sm="6", lg="3", align="center", justify="center")
+            v-col(v-for="(item, indice) in props.items", :key="item.email", cols="12", :sm="large ? '12' : '6'", lg="3", align="center", justify="center")
               slot(name="card", :item="item")
                 v-card(outlined)
                   v-card-title
@@ -35,7 +35,7 @@
 
         template(v-slot:loading)
           v-row
-            v-col(v-for="(item) in numberOfSkeletons", :key="item", cols="12", sm="6", lg="3", align="center", justify="center")
+            v-col(v-for="(item) in numberOfSkeletons", :key="item", cols="12", :sm="large ? '12' : '6'", lg="3", align="center", justify="center")
               v-skeleton-loader(type="article, list-item-three-line, actions").text-right
 
 
@@ -79,6 +79,14 @@ export default {
     itemsPerPageArray: {
       type: Array,
       default: () => [4, 8, 12]
+    },
+    query: {
+      type: Object,
+      default: () => {}
+    },
+    large: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -92,7 +100,6 @@ export default {
         mdiDelete
       },
       ids: [],
-      query: {},
       pagination: null,
       total: 0,
       limit: 0,
