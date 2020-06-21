@@ -1,9 +1,8 @@
 <template lang="pug">
-  v-snackbar(v-model="active", :color="color")
-    div {{message}}
-    v-spacer
-    v-btn(v-if="close", @click="closeSnack", icon)
-      v-icon {{svg.mdiClose}}
+  v-snackbar(v-model="active", :color="color") {{message}}
+    template(v-slot:action="{ attrs }")
+      v-btn(v-bind="attrs", v-if="close", @click="closeSnack", icon)
+        v-icon {{svg.mdiClose}}
 
 </template>
 
