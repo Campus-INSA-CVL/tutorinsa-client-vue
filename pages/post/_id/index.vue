@@ -1,12 +1,11 @@
 <template lang="pug">
   v-row
-    v-col(cols="12", md="7")
+    v-col(cols="12", md="8")
       post-app(:post="post")
     v-col(cols="12", sm="6", md="4", v-if="post && post.creator")
       h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-regular créateur
       about-user-app(:user="post.creator")
-    v-col(cols="12", sm="6", md="4", v-if="post && othersTutors && othersTutors.length")
-      h3.text-capitalize.font-weight-regular tuteurs
+      h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-regular.mt-4 tuteurs
       about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index")
 </template>
 
