@@ -1,6 +1,6 @@
 <template lang="pug">
   v-row
-    v-col(cols="12", md="8")
+    v-col(cols="12", md="8", v-if="post") {{post}}
       post-app(:post="post")
     v-col(cols="12", sm="6", md="4", v-if="post && post.creator")
       h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-regular créateur
@@ -51,9 +51,11 @@ export default {
     ...mapGetters({
       getPost: 'posts/get'
     }),
-    title() {
-      return this.post ? this.post.subject.name.toUpperCase() : 'Chargement...'
-    },
+    // title() {
+    //   return this.post?.subject
+    //     ? this.post.subject.name.toUpperCase()
+    //     : 'Chargement...'
+    // },
     loading() {
       return !this.post
     },
@@ -74,7 +76,14 @@ export default {
   },
   head() {
     return {
-      title: this.title
+      title: this.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.post.comment
+        }
+      ]
     }
   }
 }

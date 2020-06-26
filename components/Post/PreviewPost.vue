@@ -116,14 +116,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.tutor {
-  border-left: 5px solid;
-  border-left-color: var(--v-primary-base) !important;
-}
-.student {
-  border-left: 5px solid;
-  border-left-color: var(--v-eleve-base) !important;
-}
-</style>
