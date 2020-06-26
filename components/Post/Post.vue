@@ -151,7 +151,7 @@ export default {
             .format('[Le] dddd LL [à] LT')}\n\nLe mot du tuteur: ${
             post.comment
           }\n`,
-          title: `TutorINSA: ${post.subject.name.toUpperCase()}`
+          title: `TutorINSA: ${post.subject?.name.toUpperCase()}`
         })
       } catch (error) {
         // eslint-disable-next-line
