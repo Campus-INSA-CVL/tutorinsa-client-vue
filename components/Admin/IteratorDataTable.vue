@@ -108,7 +108,8 @@ export default {
       sortDesc: false,
       page: 1,
       dialog: false,
-      editedItem: {}
+      editedItem: {},
+      createdData: null
     }
   },
   computed: {
@@ -131,7 +132,7 @@ export default {
       }
     },
     fetchQuery() {
-      return Object.assign({}, this.query, {
+      return Object.assign({}, this.query ?? {}, {
         $limit: this.limit,
         $skip: this.skip
       })
@@ -152,22 +153,56 @@ export default {
   created() {
     this.limit = this.itemsPerPageArray[0]
     this.itemsPerPage = this.itemsPerPageArray[0]
+    // this.$FeathersVuex.api[this.modelName].on('created', this.handleCreated)
+  },
+  destroyed() {
+    // this.$FeathersVuex.api[this.modelName].off('created', this.handleCreated)
   },
   methods: {
+    handleCreated(data) {
+      console.log(data)
+      // const Model = this.$FeathersVuex.api[this.modelName]
+      // const created = new Model(data)
+      // const createdClone = created.clone()
+      // createdClone.commit()
+      console.log(' this.ids:', this.ids)
+      // this.ids = [...this.ids, data._id.toString()]
+      this.createdData = Object.assign({}, data)
+      console.log('Object.assign({}, data):', Object.assign({}, data))
+      this.$store.commit(`${this.service}/addItem`, data)
+    },
     queryWhen() {
       if (this.pagination) {
-        const queryString = JSON.stringify(this.query)
+        console.log('this.pagination:', this.pagination)
+        const queryString = JSON.stringify(this.query ?? {})
+        console.log('queryString:', queryString)
         const queryKeys = Object.keys(this.pagination)
+        console.log('queryKeys:', queryKeys)
 
         if (queryKeys.includes(queryString)) {
           const pageIdString = `{"$limit":${this.limit},"$skip":${this.skip}}`
           const pageIdKeys = Object.keys(this.pagination[queryString])
 
           if (pageIdKeys.includes(pageIdString)) {
+            // if (this.createdData) {
+            //   this.pagination[queryString].total += 1
+            //   // this.pagination[queryString][pageIdString].ids.push(
+            //   //   this.createdData?._id?.toString()
+            //   // )
+            //   this.createdData = null
+            // }
             const { ids } = this.pagination[queryString][pageIdString]
+            console.log('ids.length:', ids.length)
+            console.log('this.ids.length:', this.ids.length)
+            // this.ids = [...ids, this.createdData?._id?.toString()]
+            // if (this.createdData) {
+            //   console.log('add the ids')
+            //   this.createdData = null
+            // } else if (ids.length <= this.ids.length) {
+            // }
 
             this.ids = ids
-
+            console.log(' this.ids:', this.ids)
             return false
           }
         }
@@ -177,9 +212,15 @@ export default {
       }
     },
     getPaginationInfo(scope) {
+      console.log('scope:', scope)
       const { queryInfo, pageInfo, pagination } = scope
       this.pagination = pagination
       this.total = queryInfo.total
+      // this.total = queryInfo.total
+      // console.log('queryInfo.total:', queryInfo.total)
+      // if (scope.items.length > queryInfo.total) {
+      //   this.total = scope.items.length
+      // }
       if (this.queryWhen()) {
         if (pageInfo?.ids?.length) {
           this.ids = pageInfo.ids

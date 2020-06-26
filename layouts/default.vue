@@ -124,6 +124,11 @@ export default {
           icon: 'mdiHome'
         },
         {
+          title: 'calendrier',
+          link: '/calendar',
+          icon: 'mdiCalendar'
+        },
+        {
           title: 'aide',
           link: '/help/how-it-works',
           icon: 'mdiHelpCircle'

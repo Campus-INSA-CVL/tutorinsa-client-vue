@@ -9,7 +9,7 @@
         | {{user.email}}
       div
         v-icon(left, small) {{svg.mdiCardText}}
-        span {{user.year.name.toUpperCase()}}-{{user.department.name.toUpperCase()}}
+        //- span {{user.year.name.toUpperCase()}}-{{user.department.name.toUpperCase()}}
       div
         v-icon(left, small) {{svg.mdiStar}}
         span matières préférées

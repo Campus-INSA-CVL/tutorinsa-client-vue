@@ -3,7 +3,7 @@
     v-col(cols="12", sm="8", md="6", lg="4").pt-0
       user-app(:user="user")
     v-col(cols="12", sm="4", md="6", lg="8", v-if="user").pt-0
-      iterator-table-app(:numberOfItems="numberOfPosts", service="posts", modelName="posts", :itemsPerPageArray="[12, 24, 36]", :query="{ _id: { $in: this.user.createdPostsIds } }", large)
+      iterator-table-app(:numberOfItems="numberOfPosts", service="posts", modelName="Post", :itemsPerPageArray="[12, 24, 36]", :query="{ _id: { $in: this.user.createdPostsIds } }", large)
         template(v-slot:card="{ item }")
           preview-post-app(:post="item", outlined, deletable)
 </template>
