@@ -15,17 +15,20 @@
         v-sheet(height="600")
           v-calendar(ref="calendar", v-model="focus", :weekdays="weekdays", color="primary", :locale="lang", :events="events", :type="type", @click:event="showEvent", short-intervals, :first-interval="intervals.first", :interval-minutes="intervals.minutes", :interval-count="intervals.count", :interval-height="intervals.height", @click:more="viewDay", @click:date="viewDay")
           v-menu(v-model="selectedOpen", :close-on-content-click="false", :activator="selectedElement", offset-x)
-            v-card(flat)
-              v-card-title {{selectedEvent.comment}}
-              nuxt-link(:to="`/post/${selectedEvent._id}`") voir plus
+            preview-post-app(:post="selectedEvent.post")
 </template>
 
 <script>
 import { makeFindMixin } from 'feathers-vuex'
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
 
+import PreviewPost from '@/components/Post/PreviewPost'
+
 export default {
   name: 'Calendar',
+  components: {
+    'preview-post-app': PreviewPost
+  },
   mixins: [makeFindMixin({ service: 'posts', watch: true })],
   data() {
     return {
@@ -107,8 +110,7 @@ export default {
             start: new Date(post.startAt),
             end: new Date(post.endAt),
             name: post.subject.name,
-            comment: post.comment,
-            _id: post._id,
+            post,
             timed: true
           })
         })
