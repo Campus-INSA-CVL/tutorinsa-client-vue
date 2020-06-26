@@ -384,6 +384,11 @@ export default {
     }
   },
   watch: {
+    dialog(value) {
+      if (value) {
+        window.addEventListener('keydown', this.handleKeys)
+      }
+    },
     'editedItem.type'(type) {
       this.cancel()
       this.editedItem.type = type
@@ -475,6 +480,12 @@ export default {
       Rooms: 'rooms/find',
       Calendars: 'calendars/find'
     }),
+    handleKeys(e) {
+      if (e.keyCode === 13 && e.ctrlKey) {
+        e.preventDefault()
+        this.save()
+      }
+    },
     userPermissions(type) {
       return (
         this.user?.permissions.includes(type) ||
@@ -560,6 +571,7 @@ export default {
       this.$refs.FormPost.reset()
     },
     close() {
+      window.removeEventListener('keydown', this.handleKeys)
       this.dialog = false
     },
     save() {
