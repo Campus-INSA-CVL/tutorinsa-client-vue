@@ -2,11 +2,10 @@
 v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage", :page="page", hide-default-footer, :loading="isFindServicePending", :sort-by.sync='sortBy')
   template(v-slot:header)
     v-toolbar(flat)
-      v-spacer
-      v-toolbar-items
-        v-col(cols="6")
+      v-row(justify="end")
+        v-col(cols="6", sm="4", md="3")
           v-select(label="Type de posts", :items="typeSelect", :menu-props="{bottom: true, offsetY: true}", v-model="type", hide-details, outlined, dense, v-if="serviceName === 'posts'")
-        v-col(cols="6")
+        v-col(cols="6", sm="4", md="3")
           v-select(label="Élements par page", :items="itemsPerPageArray", :menu-props="{bottom: true, offsetY: true}", v-model="itemsPerPage", hide-details, outlined, dense)
   template(v-slot:footer)
     v-pagination(v-model="page", :length="numberOfPages", v-if="items.length")
@@ -25,6 +24,8 @@ v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage", :page="page
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import { makeFindMixin } from 'feathers-vuex'
 
 export default {
@@ -84,6 +85,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      isAuth: 'auth/isAuthenticated'
+    }),
+    qid() {
+      return this.isAuth ? this.serviceName : this.serviceName + 'NotAuth'
+    },
     fullQuery() {
       const query = Object.assign({}, this.query)
       if (this.type) {
@@ -118,24 +125,21 @@ export default {
         $skip: this.skip
       }
       Object.assign(query, this.fullQuery)
-      const qid = this.serviceName
       return {
         query,
         pagination: true,
-        qid
+        qid: this.qid
       }
     },
     serviceQueryWhen() {
-      if (this.servicePaginationData[this.serviceName]) {
+      if (this.servicePaginationData[this.qid]) {
         const queryString = JSON.stringify(this.fullQuery)
-        const queryKeys = Object.keys(
-          this.servicePaginationData[this.serviceName]
-        )
+        const queryKeys = Object.keys(this.servicePaginationData[this.qid])
         if (queryKeys.includes(queryString)) {
           const pageIdString = `{"$limit":${this.limit ??
             this.itemsPerPageArray[0]},"$skip":${this.skip}}`
           const pageIdKeys = Object.keys(
-            this.servicePaginationData[this.serviceName][queryString]
+            this.servicePaginationData[this.qid][queryString]
           )
           if (pageIdKeys.includes(pageIdString)) {
             return false
