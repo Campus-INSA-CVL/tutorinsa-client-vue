@@ -28,10 +28,10 @@
                 span.text-body-2 {{post.studentsIds.length}}/{{post.studentsCapacity}}
     v-card-actions.pt-0
       v-row(justify="space-between")
-        v-col(cols="12", sm="6", align="center")
-          v-btn(depressed, color="primary--text",:small="$vuetify.breakpoint.xs", :disabled="!canTutorSubscribe", v-if="isUser('tuteur') && !isEleve(post.type)",, @click="subscription('tuteur')") {{subAsTutor ? 'désinscription' : 'inscription'}} tuteur
-        v-col(cols="12", sm="6", align="center")
-          v-btn(depressed, color="eleve--text", :small="$vuetify.breakpoint.xs",:disabled="!canStudentSubscribe", v-if="isUser('eleve') && !isEleve(post.type)", @click="subscription('eleve')") {{subAsStudent ? 'désinscription' : 'inscription'}} eleve
+        v-col(cols="12", sm="6", align="center", v-if="isUser('tuteur') && !isEleve(post.type)")
+          v-btn(depressed, color="primary--text",:small="$vuetify.breakpoint.xs", :disabled="!canTutorSubscribe", @click="subscription('tuteur')") {{subAsTutor ? 'désinscription' : 'inscription'}} tuteur
+        v-col(cols="12", sm="6", align="center", v-if="isUser('eleve') && !isEleve(post.type)")
+          v-btn(depressed, color="eleve--text", :small="$vuetify.breakpoint.xs",:disabled="!canStudentSubscribe", @click="subscription('eleve')") {{subAsStudent ? 'désinscription' : 'inscription'}} eleve
 </template>
 
 <script>
@@ -80,6 +80,9 @@ export default {
       if (this.user.createdPostsIds.includes(postId)) {
         return false
       }
+      if (this.subAsStudent) {
+        return true
+      }
       if (this.post.studentsIds.length === this.post.studentsCapacity) {
         return false
       }
@@ -89,6 +92,9 @@ export default {
       const postId = this.post._id
       if (this.user.createdPostsIds.includes(postId)) {
         return false
+      }
+      if (this.subAsTutor) {
+        return true
       }
       if (this.post.tutorsIds.length === this.post.tutorsCapacity) {
         return false
