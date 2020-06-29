@@ -12,7 +12,7 @@
 
       div(v-if="post.creator") #[v-icon(left) {{svg.mdiSchool}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold par qui ?] {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
 
-      div(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").title.mt-4 #[span.text-capitalize le]&nbsp;message du créateur:
+      div(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").font-weight-medium.title.mt-4 #[span.text-capitalize le]&nbsp;message du créateur:
       div.text-justify.mb-4 {{post.comment}}
       v-divider(v-if="!isEleve(post.type) && user")
       v-row(v-if="!isEleve(post.type) && user")
@@ -28,8 +28,8 @@
                 span.text-body-2 {{post.studentsIds.length}}/{{post.studentsCapacity}}
     v-card-actions.pt-0
       v-row(justify="space-between")
-        v-col(cols="12", sm="6", align="center", v-if="isUser('tuteur') && !isEleve(post.type)")
-          v-btn(depressed, color="primary--text",:small="$vuetify.breakpoint.xs", :disabled="!canTutorSubscribe", @click="subscription('tuteur')") {{subAsTutor ? 'désinscription' : 'inscription'}} tuteur
+        v-col(cols="12", sm="6", align="center", v-if="(isUser('tuteur') && !isEleve(post.type)) || $vuetify.breakpoint.smAndUp")
+          v-btn(depressed, color="primary--text",:small="$vuetify.breakpoint.xs", :disabled="!canTutorSubscribe", @click="subscription('tuteur')", v-if="(isUser('tuteur') && !isEleve(post.type))") {{subAsTutor ? 'désinscription' : 'inscription'}} tuteur
         v-col(cols="12", sm="6", align="center", v-if="isUser('eleve') && !isEleve(post.type)")
           v-btn(depressed, color="eleve--text", :small="$vuetify.breakpoint.xs",:disabled="!canStudentSubscribe", @click="subscription('eleve')") {{subAsStudent ? 'désinscription' : 'inscription'}} eleve
 </template>
