@@ -39,14 +39,6 @@ export default {
       type: String,
       default: ''
     },
-    editable: {
-      type: Boolean,
-      default: false
-    },
-    deletable: {
-      type: Boolean,
-      default: false
-    },
     largeCard: {
       type: Boolean,
       default: false
@@ -127,10 +119,11 @@ export default {
         $skip: this.skip
       }
       Object.assign(query, this.fullQuery)
+      const qid = this.serviceName
       return {
         query,
         pagination: true,
-        qid: this.serviceName
+        qid
       }
     },
     serviceQueryWhen() {

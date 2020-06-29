@@ -1,16 +1,25 @@
 <template lang="pug">
+section
   v-row
-    v-col(cols="12", md="8", v-if="post") {{post}}
+    v-col(cols="12", md="8", v-if="post")
       post-app(:post="post")
     v-col(cols="12", sm="6", md="4", v-if="post && post.creator")
-      h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-regular créateur
-      about-user-app(:user="post.creator")
-      h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-regular.mt-4 tuteurs
-      about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index")
+      h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-black créateur
+      about-user-app(:user="post.creator").mt-4
+  v-row
+    v-col(cols="12", md="4")
+      h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.primary--text.mt-4 tuteurs
+      about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index").mt-4
+    v-col(cols="12", md="8", v-if="isCreator")
+      h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.eleve--text.mt-4 élèves
+      v-row
+        v-col(cols="12", md="6", v-for="(user, index) in users").pt-0
+          about-user-app(:user="user", :key="index").mt-4
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { makeFindMixin } from 'feathers-vuex'
 
 import Post from '@/components/Post/Post'
 import AboutUser from '@/components/Post/AboutUser'
@@ -21,6 +30,7 @@ export default {
     'post-app': Post,
     'about-user-app': AboutUser
   },
+  mixins: [makeFindMixin({ service: 'users' })],
   asyncData(context) {
     const { store, params, error } = context
     const post = store.getters['posts/get'](params.id)
@@ -49,13 +59,24 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getPost: 'posts/get'
+      getPost: 'posts/get',
+      authUser: 'auth/user'
     }),
-    // title() {
-    //   return this.post?.subject
-    //     ? this.post.subject.name.toUpperCase()
-    //     : 'Chargement...'
-    // },
+    usersParams() {
+      if (!this.isCreator) {
+        return {
+          query: { $limit: 0 }
+        }
+      }
+      return {
+        query: { _id: { $in: this.post.studentsIds }, $limit: 20 }
+      }
+    },
+    title() {
+      return this.post?.subject
+        ? this.post.subject.name.toUpperCase()
+        : 'Chargement...'
+    },
     loading() {
       return !this.post
     },
@@ -64,6 +85,9 @@ export default {
       return this.post?.tutors?.filter(
         (tutor) => tutor._id.toString() !== creatorId
       )
+    },
+    isCreator() {
+      return this.authUser._id.toString() === this.post.creatorId.toString()
     }
   },
   methods: {

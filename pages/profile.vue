@@ -1,9 +1,9 @@
 <template lang="pug">
   v-row(justify="start")
-    v-col(cols="12", sm="8", md="6", lg="4").pt-0
+    v-col(cols="12", md="6", lg="4").pt-0
       user-app(:user="user")
-    v-col(cols="12", sm="4", md="6", lg="8", v-if="user").pt-0
-      iterator-table-app(:numberOfItems="numberOfPosts", service="posts", modelName="Post", :itemsPerPageArray="[12, 24, 36]", :query="{ _id: { $in: this.user.createdPostsIds } }", large)
+    v-col(cols="12", md="6", lg="8", v-if="user").pt-0
+      iterator-table-app(serviceName="posts", :itemsPerPageArray="[12, 24, 36]", :query="query", largeCard)
         template(v-slot:card="{ item }")
           preview-post-app(:post="item", outlined, deletable)
 </template>
@@ -12,7 +12,7 @@
 import { mapGetters } from 'vuex'
 
 import User from '@/components/User/User'
-import IteratorDataTable from '@/components/Admin/IteratorDataTable'
+import IteratorDataTable from '@/components/Tables/IteratorDataTable'
 import PreviewPost from '@/components/Post/PreviewPost'
 
 export default {
@@ -22,16 +22,17 @@ export default {
     'iterator-table-app': IteratorDataTable,
     'preview-post-app': PreviewPost
   },
-  data() {
-    return {
-      numberOfPosts: null
-    }
-  },
-  fetchOnServer: false,
   computed: {
     ...mapGetters({
       user: 'auth/user'
-    })
+    }),
+    query() {
+      return {
+        _id: {
+          $in: this.user.createdPostsIds
+        }
+      }
+    }
   },
   transition: {
     name: 'page',
