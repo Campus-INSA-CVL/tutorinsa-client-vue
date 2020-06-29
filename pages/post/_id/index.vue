@@ -7,8 +7,8 @@ section
       h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-black créateur
       about-user-app(:user="post.creator").mt-4
   v-row
-    v-col(cols="12", md="4")
-      h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.primary--text.mt-4 tuteurs
+    v-col(cols="12", md="4", v-if="!isEleve(post.type) && post.tutorsIds.length")
+      h3.text-capitalize.font-weight-black.primary--text.mt-4 tuteurs
       about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index").mt-4
     v-col(cols="12", md="8", v-if="isCreator")
       h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.eleve--text.mt-4 élèves
@@ -87,7 +87,10 @@ export default {
       )
     },
     isCreator() {
-      return this.authUser._id.toString() === this.post.creatorId.toString()
+      if (!this.authUser) {
+        return false
+      }
+      return this.authUser?._id?.toString() === this.post?.creatorId?.toString()
     }
   },
   methods: {
