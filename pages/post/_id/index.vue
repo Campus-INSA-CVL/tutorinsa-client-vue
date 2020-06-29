@@ -7,10 +7,10 @@ section
       h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-black créateur
       about-user-app(:user="post.creator").mt-4
   v-row
-    v-col(cols="12", md="4", v-if="!isEleve(post.type) && post.tutorsIds.length")
+    v-col(cols="12", sm="4", v-if="!isEleve(post.type) && post.tutorsIds.length")
       h3.text-capitalize.font-weight-black.primary--text.mt-4 tuteurs
       about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index").mt-4
-    v-col(cols="12", md="8", v-if="isCreator")
+    v-col(cols="12", sm="8", v-if="isCreator")
       h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.eleve--text.mt-4 élèves
       v-row
         v-col(cols="12", md="6", v-for="(user, index) in users").pt-0
@@ -30,7 +30,7 @@ export default {
     'post-app': Post,
     'about-user-app': AboutUser
   },
-  mixins: [makeFindMixin({ service: 'users' })],
+  mixins: [makeFindMixin({ service: 'users', watch: true })],
   asyncData(context) {
     const { store, params, error } = context
     const post = store.getters['posts/get'](params.id)
@@ -54,7 +54,9 @@ export default {
   },
   data() {
     return {
-      transition: 'fade-transition'
+      transition: 'fade-transition',
+      limit: 0,
+      skip: 0
     }
   },
   computed: {
@@ -62,14 +64,32 @@ export default {
       getPost: 'posts/get',
       authUser: 'auth/user'
     }),
+    usersQuery() {
+      return { _id: { $in: this.post.studentsIds } }
+    },
     usersParams() {
-      if (!this.isCreator) {
-        return {
-          query: { $limit: 0 }
-        }
-      }
+      const query = Object.assign({}, this.usersQuery, { $limit: this.limit })
       return {
-        query: { _id: { $in: this.post.studentsIds }, $limit: 20 }
+        query,
+        qid: 'users'
+      }
+    },
+    usersQueryWhen() {
+      if (this.usersPaginationData.users) {
+        const queryString = JSON.stringify(this.usersQuery)
+        const queryKeys = Object.keys(this.usersPaginationData.users)
+        if (queryKeys.includes(queryString)) {
+          const pageIdString = `{"$limit":${this.limit},"$skip":${this.skip}}`
+          const pageIdKeys = Object.keys(
+            this.usersPaginationData.users[queryString]
+          )
+          if (pageIdKeys.includes(pageIdString)) {
+            return false
+          }
+        }
+        return true
+      } else {
+        return true
       }
     },
     title() {
@@ -91,6 +111,13 @@ export default {
         return false
       }
       return this.authUser?._id?.toString() === this.post?.creatorId?.toString()
+    }
+  },
+  mounted() {
+    if (!this.isCreator) {
+      this.limit = 0
+    } else {
+      this.limit = 20
     }
   },
   methods: {
