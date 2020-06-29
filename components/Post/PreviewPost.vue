@@ -71,12 +71,10 @@ export default {
       user: 'auth/user'
     }),
     isCreator() {
-      return (
-        (this.user?._id &&
-          this.post?.creator?._id &&
-          this.post.creator._id === this.user._id) ||
-        this.user?.permissions?.includes('admin')
-      )
+      return this.post?.creator?._id === this.user?._id
+    },
+    isAdmin() {
+      return this.user?.permissions?.includes('admin')
     }
   },
   methods: {
