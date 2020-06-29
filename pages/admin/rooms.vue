@@ -15,7 +15,7 @@
 <script>
 import { mdiMapMarker, mdiClockOutline, mdiClockStart } from '@mdi/js'
 
-import IteratorDataTable from '@/components/Admin/IteratorDataTable'
+import IteratorDataTable from '@/components/Tables/IteratorDataTable'
 
 export default {
   name: 'AdminRooms',

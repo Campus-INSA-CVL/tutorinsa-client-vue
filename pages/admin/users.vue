@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import IteratorDataTable from '@/components/Admin/IteratorDataTable'
+import IteratorDataTable from '@/components/Tables/IteratorDataTable'
 import EditUser from '@/components/User/EditUser'
 
 export default {
