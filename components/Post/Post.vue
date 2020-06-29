@@ -14,7 +14,7 @@
 
       div(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").title.mt-4 #[span.text-capitalize le]&nbsp;message du créateur:
       div.text-justify.mb-4 {{post.comment}}
-      v-divider
+      v-divider(v-if="!isEleve(post.type) && user")
       v-row(v-if="!isEleve(post.type) && user")
         v-col(cols="12", sm="6").pb-0
           div Nombre de tuteurs
