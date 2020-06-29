@@ -9,7 +9,11 @@ v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage", :page="page
         v-col(cols="6")
           v-select(label="Élements par page", :items="itemsPerPageArray", :menu-props="{bottom: true, offsetY: true}", v-model="itemsPerPage", hide-details, outlined, dense)
   template(v-slot:footer)
-    v-pagination(v-model="page", :length="numberOfPages")
+    v-pagination(v-model="page", :length="numberOfPages", v-if="items.length")
+  template(v-slot:no-data)
+    v-row
+      v-col.text-center
+        h3.font-weight-bold Nous n'avons rien trouvé ! 🤷‍♂️
   template(v-slot:loading)
     v-row
       v-col(v-for="item in itemsPerPage", :key="item", cols="12", :sm="largeCard ? '12' : '6'", lg="4", align="center", justify="center")
@@ -22,10 +26,9 @@ v-data-iterator(:items="items", :items-per-page.sync="itemsPerPage", :page="page
 
 <script>
 import { makeFindMixin } from 'feathers-vuex'
-import { mdiPencil, mdiDelete } from '@mdi/js'
 
 export default {
-  name: '',
+  name: 'IteratorDataTable',
   mixins: [
     makeFindMixin({
       service() {
@@ -58,10 +61,6 @@ export default {
   },
   data() {
     return {
-      svg: {
-        mdiPencil,
-        mdiDelete
-      },
       page: 1,
       limit: null,
       skip: 0,
