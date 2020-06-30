@@ -2,13 +2,22 @@
   v-card(outlined)
     v-card-title #[span.text-uppercase.font-weight-bold {{post.subject.name}}] #[span(v-if="post.startAt").subtitle-2 &nbsp;({{$moment(post.startAt).fromNow()}})]
       v-spacer
-      v-btn(outlined, @click="share(post)", :small="$vuetify.breakpoint.xs")
-        v-icon(v-if="$vuetify.breakpoint.xs") {{svg.mdiShare}}
-        span(v-if="!$vuetify.breakpoint.xs") partager
+      v-tooltip(v-model="tooltip", bottom)
+        template(v-slot:activator="{ attrs }")
+          v-btn(outlined, @click="share(post)", :small="$vuetify.breakpoint.xs", v-bind="attrs")
+            v-icon(v-if="$vuetify.breakpoint.xs") {{svg.mdiShare}}
+            span(v-if="!$vuetify.breakpoint.xs") partager
+        v-icon(left) {{ svg.mdiClipboardCheck }}
+        span.text-capitalize copié
     v-card-text.body-1.pb-0
+      div
+        v-icon(left) {{ svg.mdiMapMarker }}
+        span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold où ?&nbsp;
+        span.text-uppercase {{ campus }}
+
       div(v-if="post.startAt") #[v-icon(left) {{svg.mdiCalendar}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold quand ?] #[span.text-capitalize &nbsp;{{$moment(post.startAt).local().format('dddd LL')}}]
 
-      div(v-if="post.startAt") #[v-icon(left) {{svg.mdiClockOutline}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold où ?] #[span &nbsp;{{$moment(post.startAt).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;](durée: {{$moment.utc(0).add($moment.duration(post.duration, 'minutes')).format('HH[\']mm["]')}}) #[span(v-if="post.room") en {{post.room.name.toUpperCase()}} à {{post.room.campus.toUpperCase()}}]
+      div(v-if="post.startAt") #[v-icon(left) {{svg.mdiClockOutline}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold à quelle heure ?] #[span &nbsp;{{$moment(post.startAt).local().format('LT')}}-{{$moment(post.endAt).local().format('LT')}}&nbsp;](durée: {{$moment.utc(0).add($moment.duration(post.duration, 'minutes')).format('HH[\']mm["]')}}) #[span(v-if="post.room") en {{post.room.name.toUpperCase()}}]
 
       div(v-if="post.creator") #[v-icon(left) {{svg.mdiSchool}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold par qui ?] {{post.creator.lastName.toUpperCase()}} #[span.text-capitalize {{post.creator.firstName}}]
 
@@ -37,7 +46,14 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import { mdiClockOutline, mdiCalendar, mdiSchool, mdiShare } from '@mdi/js'
+import {
+  mdiClockOutline,
+  mdiCalendar,
+  mdiSchool,
+  mdiShare,
+  mdiClipboardCheck,
+  mdiMapMarker
+} from '@mdi/js'
 
 import { EventBus } from '@/utils/event-bus'
 
@@ -55,14 +71,20 @@ export default {
         mdiClockOutline,
         mdiCalendar,
         mdiSchool,
-        mdiShare
-      }
+        mdiShare,
+        mdiClipboardCheck,
+        mdiMapMarker
+      },
+      tooltip: false
     }
   },
   computed: {
     ...mapGetters({
       user: 'auth/user'
     }),
+    campus() {
+      return this.post.campus ?? this.post.room.campus
+    },
     subAsStudent() {
       const studentsSubscriptions = this.user?.studentSubscriptionsIds.map(
         (sub) => sub.toString()
@@ -160,15 +182,21 @@ export default {
           title: `TutorINSA: ${post.subject?.name.toUpperCase()}`
         })
       } catch (error) {
-        // eslint-disable-next-line
-        console.error(error)
-        EventBus.$emit('snackEvent', {
-          color: 'error',
-          message:
-            'Une erreur est survenue lors du chargement de la fonction partager',
-          active: true,
-          close: true
-        })
+        try {
+          await navigator.clipboard.writeText(window.location.href)
+          this.tooltip = true
+          setTimeout(() => {
+            this.tooltip = false
+          }, 1500)
+        } catch (error) {
+          EventBus.$emit('snackEvent', {
+            color: 'error',
+            message:
+              'Une erreur est survenue lors du chargement de la fonction partager',
+            active: true,
+            close: true
+          })
+        }
       }
     }
   }

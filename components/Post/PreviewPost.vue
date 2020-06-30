@@ -3,10 +3,13 @@
     v-card(:class="!outlined && isEleve(post.type) ? 'student': (outlined ? '' : 'tutor')", :elevation="hoverProp && hover ? 12 : (hoverProp ? 4 : 0)", :outlined="outlined")
 
       v-card-title
-        span.text-uppercase.font-weight-bold {{post.subject.name}}
+        span.text-uppercase.font-weight-bold.text-truncate {{post.subject.name}}
         span(v-if="post.startAt").subtitle-2 &nbsp;({{$moment(post.startAt).fromNow()}})
 
       v-card-subtitle.text-left
+        v-icon(small, left) {{ svg.mdiMapMarker }}
+        span.text-uppercase {{ campus }}
+        br
         v-icon(small, left, v-if="post.startAt") {{svg.mdiCalendar}}
         span(v-if="post.startAt").text-capitalize &nbsp;{{$moment(post.startAt).local().format('dddd LL')}}
         br(v-if="post.startAt")
@@ -27,7 +30,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { mdiClockOutline, mdiCalendar, mdiSchool } from '@mdi/js'
+import { mdiClockOutline, mdiCalendar, mdiSchool, mdiMapMarker } from '@mdi/js'
 
 import { EventBus } from '@/utils/event-bus'
 
@@ -62,7 +65,8 @@ export default {
       svg: {
         mdiClockOutline,
         mdiCalendar,
-        mdiSchool
+        mdiSchool,
+        mdiMapMarker
       }
     }
   },
@@ -75,6 +79,9 @@ export default {
     },
     isAdmin() {
       return this.user?.permissions?.includes('admin')
+    },
+    campus() {
+      return this.post.campus ?? this.post.room.campus
     }
   },
   methods: {
