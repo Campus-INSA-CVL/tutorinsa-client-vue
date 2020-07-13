@@ -13,7 +13,7 @@
       div
         v-icon(left) {{ svg.mdiMapMarker }}
         span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold où ?&nbsp;
-        span.text-uppercase {{ campus }}
+        span.text-uppercase {{ campusPost }}
 
       div(v-if="post.startAt") #[v-icon(left) {{svg.mdiCalendar}}] #[span(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-uppercase.font-weight-bold quand ?] #[span.text-capitalize &nbsp;{{$moment(post.startAt).local().format('dddd LL')}}]
 
@@ -122,6 +122,9 @@ export default {
         return false
       }
       return true
+    },
+    campusPost() {
+      return this.post.room?.campus ?? this.post.campus
     }
   },
   methods: {
