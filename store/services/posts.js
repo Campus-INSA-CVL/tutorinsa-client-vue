@@ -15,6 +15,7 @@ class Post extends BaseModel {
   static instanceDefaults() {
     return {
       comment: '',
+      campus: '',
       subjectId: '',
       studentsIds: [],
       tutorsIds: [],

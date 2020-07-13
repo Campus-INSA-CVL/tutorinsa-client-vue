@@ -41,6 +41,13 @@ export default {
     background: 'linear-gradient(to right, #42bdee, #5673b7)'
   },
   /*
+   ** Customize the page transition
+   */
+  pageTransition: {
+    name: 'page',
+    mode: 'out-in'
+  },
+  /*
    ** Global CSS
    */
   css: ['~/assets/main.css'],
