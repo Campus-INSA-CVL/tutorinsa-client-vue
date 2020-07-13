@@ -1,5 +1,6 @@
 <template lang="pug">
 section
+  pre
   v-row
     v-col(cols="12", md="8", v-if="post")
       post-app(:post="post")
@@ -7,10 +8,10 @@ section
       h3(:class="isEleve(post.type) ? 'eleve--text': 'primary--text'").text-capitalize.font-weight-black créateur
       about-user-app(:user="post.creator").mt-4
   v-row
-    v-col(cols="12", sm="4", v-if="!isEleve(post.type) && post.tutorsIds.length")
+    v-col(cols="12", sm="4", v-if="!isEleve(post.type) && othersTutors.length")
       h3.text-capitalize.font-weight-black.primary--text.mt-4 tuteurs
       about-user-app(v-for="(tutor, index) in othersTutors", :user="tutor", :key="index").mt-4
-    v-col(cols="12", sm="8", v-if="isCreator")
+    v-col(cols="12", sm="8", v-if="isCreator && post.studentsIds.length")
       h3(v-if="!isEleve(post.type)").text-capitalize.font-weight-black.eleve--text.mt-4 élèves
       v-row
         v-col(cols="12", md="6", v-for="(user, index) in users").pt-0
