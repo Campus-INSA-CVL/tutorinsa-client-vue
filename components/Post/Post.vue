@@ -9,6 +9,7 @@
             span(v-if="!$vuetify.breakpoint.xs") partager
         v-icon(left) {{ svg.mdiClipboardCheck }}
         span.text-capitalize copié
+      form-post-app(:toPatchPost="post", margin="ml-4")
     v-card-text.body-1.pb-0
       div
         v-icon(left) {{ svg.mdiMapMarker }}
@@ -57,8 +58,13 @@ import {
 
 import { EventBus } from '@/utils/event-bus'
 
+import FormPost from '@/components/Post/FormPost'
+
 export default {
   name: 'Post',
+  components: {
+    'form-post-app': FormPost
+  },
   props: {
     post: {
       type: Object,
@@ -82,6 +88,9 @@ export default {
     ...mapGetters({
       user: 'auth/user'
     }),
+    isCreator() {
+      return this.post.creatorId.toString() === this.user._id.toString()
+    },
     campus() {
       return this.post.campus ?? this.post.room.campus
     },

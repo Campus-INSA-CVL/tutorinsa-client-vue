@@ -1,9 +1,9 @@
 <template lang="pug">
   v-dialog(v-model="dialog", fullscreen)
     template(v-slot:activator="{on}")
-      v-btn(v-on="on", depressed, :outlined="$vuetify.breakpoint.xs", :x-small="$vuetify.breakpoint.xs", :fab="$vuetify.breakpoint.xs")
-        v-icon(:left="$vuetify.breakpoint.smAndUp") {{svg.mdiTextBoxPlusOutline }}
-        span(v-if="$vuetify.breakpoint.smAndUp") créer une annonce
+      v-btn(v-on="on", depressed, :outlined="$vuetify.breakpoint.xs", :x-small="$vuetify.breakpoint.xs", :fab="$vuetify.breakpoint.xs", :class="$attrs.margin")
+        v-icon(:left="$vuetify.breakpoint.smAndUp") {{patchable ? svg.mdiTextBoxCheckOutline : svg.mdiTextBoxPlusOutline }}
+        span(v-if="$vuetify.breakpoint.smAndUp") {{ title }}
     v-card
       v-row(no-gutters)
         v-col
@@ -30,7 +30,7 @@
                   v-row(justify="center", dense)
                     v-col(cols="12", sm="10", md="8", lg="6", align="center")
                       header.text-left #[span.text-capitalize type] de l'annonce
-                      v-radio-group(v-model="editedItem.type", row, :rules="[rules.required]")
+                      v-radio-group(v-model="editedItem.type", row, :rules="[rules.required]", :disabled="patchable")
                         v-row(justify="center")
                           v-radio(label="Tuteur", value="tuteur", :color="colorPost", :disabled="!userPermissions('tuteur')").font-weight-bold
                           v-radio(label="Élève", value="eleve", :color="colorPost", :disabled="!userPermissions('eleve')").font-weight-bold
@@ -90,7 +90,7 @@
                   v-row(dense, justify="center")
                     v-col(cols="12", sm="10", md="8", lg="6", align="end")
                       v-btn(text, @click="cancel").mr-4 annuler
-                      v-btn(:color="colorPost", depressed, @click="save") créer
+                      v-btn(:color="colorPost", depressed, @click="save") {{ patchable ? 'modifier' : 'créer' }}
 
           v-card(flat, tile, v-if="$vuetify.breakpoint.smAndUp && (futurePosts && futurePosts.length > 0)")
             v-card-title.font-weight-bold
@@ -112,6 +112,7 @@ import { makeFindMixin } from 'feathers-vuex'
 
 import {
   mdiTextBoxPlusOutline,
+  mdiTextBoxCheckOutline,
   mdiClockOutline,
   mdiCalendar,
   mdiMapMarker,
@@ -134,6 +135,13 @@ export default {
     makeFindMixin({ service: 'rooms', watch: true }),
     makeFindMixin({ service: 'posts', watch: true })
   ],
+  inheritAttrs: false,
+  props: {
+    toPatchPost: {
+      type: Object,
+      default: () => {}
+    }
+  },
   async fetch() {
     try {
       let response = null
@@ -150,11 +158,11 @@ export default {
       })
     }
   },
-  fetchOnServer: false,
   data() {
     return {
       svg: {
         mdiTextBoxPlusOutline,
+        mdiTextBoxCheckOutline,
         mdiClockOutline,
         mdiCalendar,
         mdiMapMarker,
@@ -174,6 +182,8 @@ export default {
         maxTutors: (v) => v <= 5 || 'Au maximum 5',
         maxStudents: (v) => v <= 25 || 'Au maximum 20'
       },
+      title: 'créer une annonce',
+      patchable: false,
       dialog: false,
       valid: true,
       durationMenu: false,
@@ -207,6 +217,7 @@ export default {
       skip: 0
     }
   },
+  fetchOnServer: false,
   computed: {
     ...mapGetters({
       user: 'auth/user',
@@ -222,6 +233,9 @@ export default {
       )
       const postsRoomIds = filteredPosts.map((post) => post.room?._id)
       const diff = this.arrayDiff(roomsIds, postsRoomIds)
+      if (this.toPatchPost) {
+        diff.push(this.editedItem.roomId)
+      }
       return this.findRoom({ query: { _id: { $in: diff } }, $$limit: 50 }).data
     },
     postsQuery() {
@@ -404,31 +418,42 @@ export default {
       }
     },
     'editedItem.type'(type) {
-      this.cancel()
-      this.editedItem.type = type
+      if (!this.patchable) {
+        this.cancel()
+        this.editedItem.type = type
+      }
     },
     '$route.path'() {
       this.close()
     },
     'editedItem.roomId'(roomId) {
-      if (roomId) {
-        const room = this.getRoom(roomId)
-        let date = this.$moment.utc()
-        const startAt = this.$moment.utc(room.startAt)
-        date.hours(startAt.hours())
-        date.minutes(startAt.minutes())
-        date = this.$moment(date.format()).format('HH[:]mm')
-        this.editedItem.time = date
-      } else {
-        this.editedItem.time = null
+      if (!this.patchable) {
+        if (roomId) {
+          const room = this.getRoom(roomId)
+          let date = this.$moment.utc()
+          const startAt = this.$moment.utc(room.startAt)
+          date.hours(startAt.hours())
+          date.minutes(startAt.minutes())
+          date = this.$moment(date.format()).format('HH[:]mm')
+          this.editedItem.time = date
+        } else {
+          this.editedItem.time = null
+        }
       }
     },
     'editedItem.time'(time) {
-      if (time) {
-        this.editedItem.duration = this.maxDurationTime
-      } else {
-        this.editedItem.duration = null
+      if (!this.patchable) {
+        if (time) {
+          this.editedItem.duration = this.maxDurationTime
+        } else {
+          this.editedItem.duration = null
+        }
       }
+    }
+  },
+  mounted() {
+    if (this.toPatchPost?._id) {
+      this.addPatchPost()
     }
   },
   methods: {
@@ -436,6 +461,28 @@ export default {
       Subjects: 'subjects/find',
       Rooms: 'rooms/find'
     }),
+    addPatchPost() {
+      this.patchable = true
+      this.title = "éditer l'annonce"
+      this.editedItem.type = this.toPatchPost.type
+      this.editedItem.campus = this.toPatchPost.room.campus
+      this.editedItem.time = this.$moment(this.toPatchPost.startAt).format(
+        'HH[:]mm'
+      )
+      this.editedItem.subjectId = this.toPatchPost.subjectId
+      this.editedItem.comment = this.toPatchPost.comment
+      const hours = Math.trunc(this.toPatchPost.duration / 60)
+      const minutes = this.toPatchPost.duration - 60 * hours
+      this.editedItem.duration = `${hours < 10 ? '0' + hours : hours}:${
+        minutes < 10 ? '0' + minutes : minutes
+      }`
+      this.editedItem.date = this.$moment(this.toPatchPost.startAt).format(
+        'YYYY-MM-DD'
+      )
+      this.editedItem.roomId = this.toPatchPost.roomId
+      this.editedItem.studentsCapacity = this.toPatchPost.studentsCapacity
+      this.editedItem.tutorsCapacity = this.toPatchPost.tutorsCapacity
+    },
     arrayDiff(a1, a2) {
       const a = []
       const diff = []
@@ -478,8 +525,12 @@ export default {
       )
     },
     cancel() {
-      Object.assign(this.editedItem, this.resetItem)
-      this.$refs.FormPost.reset()
+      if (this.toPatchPost) {
+        this.addPatchPost()
+      } else {
+        Object.assign(this.editedItem, this.resetItem)
+        this.$refs.FormPost.reset()
+      }
     },
     close() {
       window.removeEventListener('keydown', this.handleKeys)
@@ -498,12 +549,15 @@ export default {
 
           date.hours(timeDate.hours())
           date.minutes(timeDate.minutes())
+          console.log('date:', date)
 
+          console.log('this.editedItem.duration:', this.editedItem.duration)
           duration = this.$moment.utc(0)
           const timeDuration = this.$moment.utc(
             this.$moment.utc(this.editedItem.duration, 'LT').format()
           )
-          duration = timeDuration.minutes() + timeDuration.hours() * 60
+          console.log('timeDuration:', timeDuration)
+          duration = +timeDuration.minutes() + +timeDuration.hours() * 60
         }
 
         const { Post } = this.$FeathersVuex.api
@@ -515,31 +569,60 @@ export default {
           data.duration = duration
           data.startAt = date.format()
         }
-        const newPost = new Post(data)
-        newPost
-          .create()
-          .then((response) => {
-            this.$nuxt.$loading.finish()
-            EventBus.$emit('snackEvent', {
-              color: 'success',
-              active: true,
-              message: 'Le post a été crée avec succès',
-              close: true
+        if (this.patchable) {
+          const patchPost = new Post({ ...data, id: this.toPatchPost._id })
+          console.log('patchPost:', patchPost)
+          patchPost
+            .patch()
+            .then((response) => {
+              this.$nuxt.$loading.finish()
+              EventBus.$emit('snackEvent', {
+                color: 'success',
+                active: true,
+                message: 'Le post a été modifié avec succès',
+                close: true
+              })
+              this.cancel()
+              this.close()
             })
-            this.cancel()
-            this.close()
-          })
-          .catch((error) => {
-            this.$nuxt.$loading.finish()
-            // eslint-disable-next-line
-            console.error(error)
-            EventBus.$emit('snackEvent', {
-              color: 'error',
-              message: 'Une erreur est survenue',
-              active: true,
-              close: true
+            .catch((error) => {
+              this.$nuxt.$loading.finish()
+              // eslint-disable-next-line
+              console.error(error)
+              EventBus.$emit('snackEvent', {
+                color: 'error',
+                message: 'Une erreur est survenue',
+                active: true,
+                close: true
+              })
             })
-          })
+        } else {
+          const newPost = new Post(data)
+          newPost
+            .create()
+            .then((response) => {
+              this.$nuxt.$loading.finish()
+              EventBus.$emit('snackEvent', {
+                color: 'success',
+                active: true,
+                message: 'Le post a été crée avec succès',
+                close: true
+              })
+              this.cancel()
+              this.close()
+            })
+            .catch((error) => {
+              this.$nuxt.$loading.finish()
+              // eslint-disable-next-line
+              console.error(error)
+              EventBus.$emit('snackEvent', {
+                color: 'error',
+                message: 'Une erreur est survenue',
+                active: true,
+                close: true
+              })
+            })
+        }
       } else {
         this.$nuxt.$loading.finish()
       }
