@@ -8,7 +8,9 @@
         div.grey--text.lighten-1.text-right.
           #[span.text-capitalize pas] encore de compte ? #[nuxt-link(to="/signup").primary--text #[span.text-capitalize créer] le votre]
         div.grey--text.lighten-1.text-right.
-          #[span.text-capitalize Vous] n'arrivez pas à vous connecter ? #[nuxt-link(to="/verify/email").primary--text #[span.text-capitalize Pensez] à vérifier votre compte]
+          #[span.text-capitalize vous] avez oublié votre mot de passe ? #[nuxt-link(to="/reset/password").primary--text #[span.text-capitalize réinitialisez]-le]
+        div.grey--text.lighten-1.text-right.
+          #[span.text-capitalize vous] n'arrivez pas à vous connecter ? #[nuxt-link(to="/verify/email").primary--text #[span.text-capitalize Pensez] à vérifier votre compte]
       v-card-actions
         v-spacer
         v-btn(type="submit", depressed).primary
