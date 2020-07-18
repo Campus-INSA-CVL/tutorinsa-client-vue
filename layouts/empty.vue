@@ -4,10 +4,10 @@
       v-container(fluid)
         snack-app(:color="snack.color", :message="snack.message", :close="snack.close", :active="snack.active" v-if="snack")
         v-row(align="start", justify="center")
-          v-col(cols="12", align="center")
+          v-col(cols="12" align="center")
             nuxt-link(to="/")
               v-img(alt="logo de l'association TutorINSA", :src="require('~/assets/img/icon.png')", width="200")
-        nuxt
+          nuxt
 </template>
 
 <script>

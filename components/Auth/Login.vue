@@ -1,18 +1,19 @@
 <template lang="pug">
-  div
-    v-card.elevation-4
-      form(autocomplete="on", @submit.prevent="login()")
-        v-card-title.text-uppercase.primary--text login
-        v-card-text
-          v-text-field(type="email", v-model="email", autofocus, :prepend-inner-icon="svg.mdiEmail", label="email", :rules="rules.email", outlined)
-          v-text-field(type="password", v-model="password", :prepend-inner-icon="svg.mdiLock", label="password", @click:append="show = !show", :append-icon="eyeIcon", :type="show ? 'text' : 'password'", :rules="rules.password", autocomplete="current-password", outlined)
-          div.grey--text.lighten-1.text-right.
-            #[span.text-capitalize pas] encore de compte ? #[nuxt-link(to="/signup").primary--text #[span.text-capitalize créer] le votre]
-        v-card-actions
-          v-spacer
-          v-btn(type="submit", depressed).primary
-            v-icon(left) {{svg.mdiLoginVariant}}
-            span login
+  v-card.elevation-4
+    form(autocomplete="on", @submit.prevent="login()")
+      v-card-title.text-uppercase.primary--text login
+      v-card-text
+        v-text-field(type="email", v-model="email", autofocus, :prepend-inner-icon="svg.mdiEmail", label="email", :rules="rules.email", outlined)
+        v-text-field(type="password", v-model="password", :prepend-inner-icon="svg.mdiLock", label="password", @click:append="show = !show", :append-icon="eyeIcon", :type="show ? 'text' : 'password'", :rules="rules.password", autocomplete="current-password", outlined)
+        div.grey--text.lighten-1.text-right.
+          #[span.text-capitalize pas] encore de compte ? #[nuxt-link(to="/signup").primary--text #[span.text-capitalize créer] le votre]
+        div.grey--text.lighten-1.text-right.
+          #[span.text-capitalize Vous] n'arrivez pas à vous connecter ? #[nuxt-link(to="/verify/email").primary--text #[span.text-capitalize Pensez] à vérifier votre compte]
+      v-card-actions
+        v-spacer
+        v-btn(type="submit", depressed).primary
+          v-icon(left) {{svg.mdiLoginVariant}}
+          span login
 </template>
 
 <script>
