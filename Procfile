@@ -1,1 +1,1 @@
-web: npm i --production=false && npm run build && npm start
+web: nuxt start
