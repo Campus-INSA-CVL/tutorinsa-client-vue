@@ -1,0 +1,31 @@
+.page-enter-active,
+.page-leave-active {
+  transition-property: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 300ms;
+}
+
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+  transform: scale(0.995, 0.995);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.tutor {
+  border-left: 5px solid !important;
+  border-left-color: var(--v-primary-base) !important;
+}
+.student {
+  border-left: 5px solid !important;
+  border-left-color: var(--v-eleve-base) !important;
+}
