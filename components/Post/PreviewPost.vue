@@ -81,7 +81,7 @@ export default {
       return this.user?.permissions?.includes('admin')
     },
     campus() {
-      return this.post.campus ?? this.post.room.campus
+      return this.post.campus || this.post.room.campus
     }
   },
   methods: {
