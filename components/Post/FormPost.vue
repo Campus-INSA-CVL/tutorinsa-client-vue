@@ -553,14 +553,11 @@ export default {
 
           date.hours(timeDate.hours())
           date.minutes(timeDate.minutes())
-          console.log('date:', date)
 
-          console.log('this.editedItem.duration:', this.editedItem.duration)
           duration = this.$moment.utc(0)
           const timeDuration = this.$moment.utc(
             this.$moment.utc(this.editedItem.duration, 'LT').format()
           )
-          console.log('timeDuration:', timeDuration)
           duration = +timeDuration.minutes() + +timeDuration.hours() * 60
         }
 
@@ -575,7 +572,6 @@ export default {
         }
         if (this.patchable) {
           const patchPost = new Post({ ...data, id: this.toPatchPost._id })
-          console.log('patchPost:', patchPost)
           patchPost
             .patch()
             .then((response) => {
