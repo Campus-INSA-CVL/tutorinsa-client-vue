@@ -19,7 +19,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: ''
+        content: 'this is the content'
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
