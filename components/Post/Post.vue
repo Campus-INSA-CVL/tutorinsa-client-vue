@@ -9,7 +9,7 @@
             span(v-if="!$vuetify.breakpoint.xs") partager
         v-icon(left) {{ svg.mdiClipboardCheck }}
         span.text-capitalize copié
-      form-post-app(:toPatchPost="post", margin="ml-4")
+      form-post-app(:toPatchPost="post", margin="ml-4", v-if="isCreator")
     v-card-text.body-1.pb-0
       div
         v-icon(left) {{ svg.mdiMapMarker }}
@@ -92,7 +92,7 @@ export default {
       return this.post.creatorId.toString() === this.user._id.toString()
     },
     campus() {
-      return this.post.campus ?? this.post.room.campus
+      return this.post.campus || this.post.room.campus
     },
     subAsStudent() {
       const studentsSubscriptions = this.user?.studentSubscriptionsIds.map(

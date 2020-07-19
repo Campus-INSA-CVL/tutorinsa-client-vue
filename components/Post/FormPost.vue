@@ -226,10 +226,13 @@ export default {
       getRoom: 'rooms/get',
       findRoom: 'rooms/find'
     }),
+    campus() {
+      return this.post.campus || this.post.room.campus
+    },
     filteredRooms() {
       const roomsIds = this.rooms.map((room) => room._id)
       const filteredPosts = this.posts.filter(
-        (post) => post.room.campus === this.editedItem.campus
+        (post) => this.campus === this.editedItem.campus
       )
       const postsRoomIds = filteredPosts.map((post) => post.room?._id)
       const diff = this.arrayDiff(roomsIds, postsRoomIds)
@@ -465,7 +468,8 @@ export default {
       this.patchable = true
       this.title = "éditer l'annonce"
       this.editedItem.type = this.toPatchPost.type
-      this.editedItem.campus = this.toPatchPost.room.campus
+      this.editedItem.campus =
+        this.toPatchPost.campus || this.toPatchPost.room.campus
       this.editedItem.time = this.$moment(this.toPatchPost.startAt).format(
         'HH[:]mm'
       )
