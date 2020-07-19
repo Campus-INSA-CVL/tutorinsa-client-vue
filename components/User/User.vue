@@ -28,6 +28,8 @@ div
             #[span.text-capitalize rôle](s)
           ul
             li(v-for="item in user.permissions") {{item}}
+      v-row
+        v-col(cols="12") Modifier mon mot de passe #[nuxt-link(to="/profile/password") ici]
       v-row(no-gutters).caption.mt-0
         v-col(cols="12").
           #[span.text-capitalize mise] à jour le {{ $moment(user.updatedAt).format('LL [à] LT') }} ({{ $moment(user.updatedAt).fromNow() }})
