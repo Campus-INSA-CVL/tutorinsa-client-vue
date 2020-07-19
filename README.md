@@ -42,6 +42,8 @@ Feel free to help us ! Use [issues](https://github.com/Campus-INSA-CVL/tutorinsa
 ```bash
 # check syntax of the code
 npm run lint
+# fix syntax of the code
+npm run lint:fix
 ```
 
 ## Licence
