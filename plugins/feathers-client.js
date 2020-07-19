@@ -5,7 +5,7 @@ import io from 'socket.io-client'
 import { iff, discard } from 'feathers-hooks-common'
 import feathersVuex, { initAuth } from 'feathers-vuex'
 
-const socket = io('https://tutorinsa-server.azurewebsites.net', {
+const socket = io('https://tutorinsa-server.herokuapp.com', {
   transports: ['websocket']
 })
 
