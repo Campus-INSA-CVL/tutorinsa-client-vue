@@ -5,7 +5,9 @@ import io from 'socket.io-client'
 import { iff, discard } from 'feathers-hooks-common'
 import feathersVuex, { initAuth } from 'feathers-vuex'
 
-const socket = io(process.env.API_URL, { transports: ['websocket'] })
+const socket = io('https://tutorinsa-server.azurewebsites.net', {
+  transports: ['websocket']
+})
 
 const feathersClient = feathers()
   .configure(socketio(socket))
