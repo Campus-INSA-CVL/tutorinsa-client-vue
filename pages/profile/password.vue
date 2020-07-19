@@ -2,7 +2,7 @@
   v-col(cols="12",xs="10", sm="8", md="6", lg="4", align="center")
     v-card.elevation-4
       v-form(autocomplete="on", @submit.prevent="sendPasswordchange()", ref="form", v-model="valid")
-        v-card-title.text-uppercase.primary--text réinitialiser mon mot de passe
+        v-card-title.text-uppercase.primary--text modifier mon mot de passe
         v-card-text
           v-row
             v-col(cols="12")
@@ -15,7 +15,7 @@
           v-spacer
           v-btn(type="submit", depressed, :disabled="!valid").primary
             v-icon(left) {{svg.mdiSend}}
-            span Envoyer
+            span modifier
 </template>
 
 <script>
