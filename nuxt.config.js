@@ -14,8 +14,10 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - TutorINSA',
-    title: 'TutorINSA',
+    titleTemplate: (titleChuck) => {
+      return titleChuck ? `${titleChuck} - TutorINSA` : 'TutorINSA'
+    },
+    // title: 'TutorINSA',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
