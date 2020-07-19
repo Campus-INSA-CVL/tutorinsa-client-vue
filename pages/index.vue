@@ -80,7 +80,7 @@ export default {
   },
   head() {
     return {
-      title: 'Acceuil'
+      title: 'accueil'.toUpperCase()
     }
   }
 }

@@ -119,7 +119,7 @@ export default {
       },
       nav: [
         {
-          title: 'acceuil',
+          title: 'accueil',
           link: '/',
           icon: 'mdiHome'
         },
