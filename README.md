@@ -15,7 +15,7 @@ This project need, to run correctly:
 
 ### Configuration
 
-You have to create a ".env" file using the ".local.env" as a pattern, and fill it. ".env" is used during developpement. Then, production's var are used directly from the host.
+You have to create a ".env" file using the ".local.env" as a pattern, and fill it. ".env" is used during development. Then, production's var are used directly from the host.
 
 ### Install the dependencies
 
