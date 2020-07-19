@@ -3,7 +3,18 @@
     v-col(cols="12", md="6", lg="4").pt-0
       user-app(:user="user")
     v-col(cols="12", md="6", lg="8", v-if="user").pt-0
-      iterator-table-app(serviceName="posts", :itemsPerPageArray="[12, 24, 36]", :query="query", largeCard)
+      h2.text-capitalize.mb-2.primary--text mes postes
+      iterator-table-app(serviceName="posts", :itemsPerPageArray="[12, 24, 36]", :query="queryCreatedPosts", largeCard)
+        template(v-slot:card="{ item }")
+          preview-post-app(:post="item", outlined, deletable)
+    v-col(cols="12", md="6", v-if="user").pt-0
+      h2.text-capitalize.mb-2.eleve--text mes abonnements élèves
+      iterator-table-app(serviceName="posts", :itemsPerPageArray="[12, 24, 36]", :query="queryStudentSubscriptions", largeCard)
+        template(v-slot:card="{ item }")
+          preview-post-app(:post="item", outlined, deletable)
+    v-col(cols="12", md="6", v-if="user").pt-0
+      h2.text-capitalize.mb-2.primary--text mes abonnements tuteurs
+      iterator-table-app(serviceName="posts", :itemsPerPageArray="[12, 24, 36]", :query="queryTutorSubscriptions", largeCard)
         template(v-slot:card="{ item }")
           preview-post-app(:post="item", outlined, deletable)
 </template>
@@ -26,10 +37,24 @@ export default {
     ...mapGetters({
       user: 'auth/user'
     }),
-    query() {
+    queryCreatedPosts() {
       return {
         _id: {
           $in: this.user.createdPostsIds
+        }
+      }
+    },
+    queryStudentSubscriptions() {
+      return {
+        _id: {
+          $in: this.user.studentSubscriptionsIds
+        }
+      }
+    },
+    queryTutorSubscriptions() {
+      return {
+        _id: {
+          $in: this.user.tutorSubscriptionsIds
         }
       }
     }
