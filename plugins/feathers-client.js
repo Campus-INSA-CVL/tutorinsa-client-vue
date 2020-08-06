@@ -5,9 +5,9 @@ import io from 'socket.io-client'
 import { iff, discard } from 'feathers-hooks-common'
 import feathersVuex, { initAuth } from 'feathers-vuex'
 
-// const apiUrl = process.env.API_URL || 'https://tutorinsa-server.herokuapp.com'
-console.log('process.env:', process.env)
-const socket = io(process.env.API_URL, {
+const apiUrl = process.env.API_URL || 'https://tutorinsa-server.herokuapp.com'
+console.log(apiUrl)
+const socket = io(apiUrl, {
   transports: ['websocket']
 })
 
