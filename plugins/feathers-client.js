@@ -6,7 +6,7 @@ import { iff, discard } from 'feathers-hooks-common'
 import feathersVuex, { initAuth } from 'feathers-vuex'
 
 // const apiUrl = process.env.API_URL || 'https://tutorinsa-server.herokuapp.com'
-console.log('process.env.API_URL:', process.env.API_URL)
+console.log('process.env:', process.env)
 const socket = io(process.env.API_URL, {
   transports: ['websocket']
 })
